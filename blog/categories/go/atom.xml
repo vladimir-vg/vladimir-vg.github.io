@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: go | code]]></title>
+  <title><![CDATA[Category: go | Скука и рутина это зло]]></title>
   <link href="http://vladimir-vg.github.io/blog/categories/go/atom.xml" rel="self"/>
   <link href="http://vladimir-vg.github.io/"/>
-  <updated>2014-05-26T14:37:15+03:00</updated>
+  <updated>2014-05-26T14:56:29+03:00</updated>
   <id>http://vladimir-vg.github.io/</id>
   <author>
     <name><![CDATA[Gordeev Vladimir]]></name>
