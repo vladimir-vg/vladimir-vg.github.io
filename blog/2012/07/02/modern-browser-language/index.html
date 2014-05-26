@@ -1,0 +1,273 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Каким должен быть современный браузерный язык - code</title>
+  <meta name="author" content="Gordeev Vladimir">
+
+  
+  <meta name="description" content="Или что меня не устраивает в JavaScript На самом деле в JavaScript много разных мелких неприятностей которые немного
+мешают жить, но в целом это не &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://vladimir-vg.github.io/blog/2012/07/02/modern-browser-language">
+  <link href="/favicon.ico" rel="icon">
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="code" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-28653731-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="no-sidebar"  >
+  <header role="banner"><hgroup>
+  <h1>code</h1>
+  
+    <h2><a href="/">run{}</a></h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:vladimir-vg.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Каким должен быть современный браузерный язык</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-02T21:38:00+03:00" pubdate data-updated="true">Jul 2<span>nd</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2 id="javascript">Или что меня не устраивает в JavaScript</h2>
+
+<p>На самом деле в JavaScript много разных мелких неприятностей которые немного
+мешают жить, но в целом это не является весомым поводом для того чтобы его
+отринуть. И тем не менее я хочу кое-что пересмотреть. Выпилить нахер eval,
+сделать код более строгим, всячески облагородить.</p>
+
+<p>Вполне возможно мною движет <a href="http://lurkmore.to/NIH">NIH-синдром</a>,
+однако я попробую доказать что это не так:</p>
+
+<h2 id="section">Модульность</h2>
+
+<p>Браузерный код усложнился достаточно для того чтобы потребовалась
+модульная система. <a href="http://wiki.commonjs.org/wiki/Modules/AsynchronousDefinition">Вообще-то кое-что уже появилось</a>,
+так что этот пункт засчитывается как плюс-минус.</p>
+
+<p>Типичный вебсайт сегодня — пачка jQuery-плагинов повязанных событиями.
+Модульная система должна давать возможности для расцвета зоопарка различных
+плагинов, а также безопасного из совмещения.
+(Лексическая область видимости для каждого модуля,
+<a href="http://semver.org/">“умное версионирование”</a>).</p>
+
+<h2 id="section-1">Система типов</h2>
+
+<p>Здесь выбор за <a href="http://c2.com/cgi/wiki?SoftTyping">SoftTyping</a>.</p>
+
+<p>Причина та же что и в предыдущем пункте (сложность): необходимы стандартные средства
+для проверки типов. Конечно не стоит устраивать такую содомию как в <a href="http://www.haskell.org/haskellwiki/Haskell">Haskell</a>,
+достаточно опциональных аннотаций. (привет <a href="http://www.dartlang.org/">Dart</a>!)</p>
+
+<h2 id="section-2">Простая структура кода</h2>
+
+<p>Неоднозначная фраза, под ней я имел ввиду возможность легко отследить
+зависимости в коде. Куча асинхронного кода динамически повязанного с событиями
+— дикая лапша. Отлаживать такое — то ещё удовольствие.</p>
+
+<p>Предыдущие два пункта были довольно косвенными, их можно решить без смены языка.
+Этот нет.</p>
+
+<p>Язык должен быть более строг что касается событий. Например будет обязывать
+описывать все события в одном месте (модуля).</p>
+
+<p>Кроме того желательно код писать чистым и изолированным, чтобы можно было легко
+выделить только необходимые части кода, ужать размер.</p>
+
+<p>Поэтому тут выбор за функциональным программированием. Ну и дебажить такое будет
+заметно легче. Мне представляется что-то похожее на <a href="http://www.erlang.org/">Erlang</a>. (Без процессов, конечно).</p>
+
+<h1 id="coffeescripthttpcoffeescriptorg--darthttpwwwdartlangorg"><a href="http://coffeescript.org/">CoffeeScript</a> и <a href="http://www.dartlang.org/">Dart</a></h1>
+
+<p>Два языка которые пытаются улучшить JavaScript. Coffee просто предлагает более
+приятный для глаз синтаксис, более читаемый. Dart пытается сделать какие-то
+более радикальные изменения, хотя мне кажется что всё осталось по старому.
+На мой поверхностный взгляд Dart таки предлагает большую структурированность.
+(Однако event-hell сохраняется). Короче не то что нужно. Не то что я хочу.</p>
+
+<p>Само собой я не прав.</p>
+
+<p>Как-то так.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/about" title="About the author (Gordeev Vladimir)" rel="author">Gordeev Vladimir</a></span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-02T21:38:00+03:00" pubdate data-updated="true">Jul 2<span>nd</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/coffeescript/'>coffeescript</a>, <a class='category' href='/blog/categories/dart/'>dart</a>, <a class='category' href='/blog/categories/js/'>js</a>, <a class='category' href='/blog/categories/web/'>web</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://vladimir-vg.github.io/blog/2012/07/02/modern-browser-language/" data-via="" data-counturl="http://vladimir-vg.github.io/blog/2012/07/02/modern-browser-language/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/05/29/mustache-overview/" title="Previous Post: Mustache, шаблонизатор лишённый логики">&laquo; Mustache, шаблонизатор лишённый логики</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/10/04/gamedev-framework/" title="next Post: Повторное использование кода в gamedev. Возможно?">Повторное использование кода в gamedev. Возможно? &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Gordeev Vladimir -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'vladimir-vg-blog';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://vladimir-vg.github.io/blog/2012/07/02/modern-browser-language/';
+        var disqus_url = 'http://vladimir-vg.github.io/blog/2012/07/02/modern-browser-language/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

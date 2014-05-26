@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: tdd | code]]></title>
+  <link href="http://vladimir-vg.github.io/blog/categories/tdd/atom.xml" rel="self"/>
+  <link href="http://vladimir-vg.github.io/"/>
+  <updated>2014-05-26T12:53:46+03:00</updated>
+  <id>http://vladimir-vg.github.io/</id>
+  <author>
+    <name><![CDATA[Gordeev Vladimir]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[rename watcher -> go-retest]]></title>
+    <link href="http://vladimir-vg.github.io/blog/2012/03/17/go-retest-repository/"/>
+    <updated>2012-03-17T16:46:00+03:00</updated>
+    <id>http://vladimir-vg.github.io/blog/2012/03/17/go-retest-repository</id>
+    <content type="html"><![CDATA[<p>Небольшой watcher описанный <a href="/blog/2012/03/14/test-runner-watcher-for-go/">в предыдущем посте</a>
+теперь называется <code>go-retest</code>, вызывается одноимённой командой и живёт по
+адресу: <a href="https://bitbucket.org/vladimir_vg/go-retest">https://bitbucket.org/vladimir_vg/go-retest</a></p>
+
+<p>На самом деле там почти нет ничего такого особенного, из-за чего стоило
+заводить отдельный репозиторий. Тем не менее, вещь в быту полезная, может
+будет постепенно обрастать фичами. (например анализ сорцов, вызов только необходимых тестов).</p>
+
+<p>Чем чёрт не шутит.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Постоянный прогон тестов для Go]]></title>
+    <link href="http://vladimir-vg.github.io/blog/2012/03/14/test-runner-watcher-for-go/"/>
+    <updated>2012-03-14T01:20:00+03:00</updated>
+    <id>http://vladimir-vg.github.io/blog/2012/03/14/test-runner-watcher-for-go</id>
+    <content type="html"><![CDATA[<p>Понадобилась мне небольшая тулза, которая бы перезапускала тесты при изменениях
+кода, а также уведомляла об ошибках. Проще говоря мне нужено что-то вроде
+<a href="https://github.com/seattlerb/autotest-rails">autotest для Rails</a> или
+<a href="https://github.com/mynyml/watchr">watchr</a>.</p>
+
+<p>Накидал небольшой код который мониторит все <code>*.go</code> файлы и запускает тексты.
+Использовал последний свежий Go из репозитория. Использовал команду <code>notify-send</code> для системных
+уведомлений, гарантированно работает на Ubuntu Oneric 11.10. Если есть у кого
+желание, то можно форкнуть <a href="https://gist.github.com/2032240">gist</a> и добавить
+функции системного уведомления для вашей системы.</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="keyword">package</span> main
+
+<span class="keyword">import</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">log</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">import</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">os</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">import</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">regexp</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">import</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">os/exec</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">import</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">exp/inotify</span><span class="delimiter">&quot;</span></span>
+
+<span class="keyword">func</span> runTests() {
+    cmd := exec.Command(<span class="string"><span class="delimiter">&quot;</span><span class="content">go</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">test</span><span class="delimiter">&quot;</span></span>)
+    cmd.Stdout = os.Stdout
+    <span class="keyword">if</span> err := cmd.Run(); err != <span class="predefined-constant">nil</span> {
+        log.Println(err)
+        notifySystem(<span class="string"><span class="delimiter">&quot;</span><span class="content">go test failed</span><span class="delimiter">&quot;</span></span>)
+    }
+}
+
+<span class="comment">// probably will work only for Ubuntu</span>
+<span class="keyword">func</span> notifySystem(message <span class="predefined-type">string</span>) {
+    cmd := exec.Command(<span class="string"><span class="delimiter">&quot;</span><span class="content">notify-send</span><span class="delimiter">&quot;</span></span>, message)
+    <span class="keyword">if</span> err := cmd.Run(); err != <span class="predefined-constant">nil</span> {
+        log.Fatal(err)
+    }
+}
+
+<span class="keyword">func</span> setupWatcher() *inotify.Watcher {
+    watcher, err := inotify.NewWatcher()
+    <span class="keyword">if</span> err != <span class="predefined-constant">nil</span> {
+        log.Fatal(err)
+    }
+
+    err = watcher.AddWatch(<span class="string"><span class="delimiter">&quot;</span><span class="content">.</span><span class="delimiter">&quot;</span></span>, inotify.IN_MODIFY)
+    <span class="keyword">if</span> err != <span class="predefined-constant">nil</span> {
+        log.Fatal(err)
+    }
+
+    <span class="keyword">return</span> watcher
+}
+
+<span class="keyword">func</span> main() {
+    watcher := setupWatcher()
+
+    runTests()
+    <span class="keyword">for</span> {
+        <span class="keyword">select</span> {
+        <span class="keyword">case</span> ev := &lt;-watcher.Event:
+            matched, err := regexp.MatchString(<span class="string"><span class="delimiter">&quot;</span><span class="content">.*</span><span class="char">\\</span><span class="content">.go</span><span class="delimiter">&quot;</span></span>, ev.Name)
+            <span class="keyword">if</span> err != <span class="predefined-constant">nil</span> {
+                log.Fatal(err)
+            }
+
+            <span class="keyword">if</span> matched {
+                <span class="comment">// On my machine it always raised two events</span>
+                <span class="comment">// ignore second, prevent twice tests run.</span>
+                <span class="comment">// Probably it's depends of test editor.</span>
+                <span class="comment">// If so, feel free to</span>
+                <span class="comment">// remove line above:</span>
+                &lt;-watcher.Event
+
+                runTests()
+            }
+        <span class="keyword">case</span> err := &lt;-watcher.Error:
+            log.Println(<span class="string"><span class="delimiter">&quot;</span><span class="content">error:</span><span class="delimiter">&quot;</span></span>, err)
+        }
+    }
+}
+</pre></div>
+</div>
+</div>
+
+<p><strong>UPD:</strong> Теперь watcher живёт по адресу:
+<a href="https://bitbucket.org/vladimir_vg/go-retest">https://bitbucket.org/vladimir_vg/go-retest</a>.
+Подробнее <a href="/blog/2012/03/17/go-retest-repository/">в следующем посте</a>.</p>
+]]></content>
+  </entry>
+  
+</feed>

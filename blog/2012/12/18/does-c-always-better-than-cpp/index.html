@@ -1,0 +1,271 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Есть ли случаи, когда Си лучше C++? - code</title>
+  <meta name="author" content="Gordeev Vladimir">
+
+  
+  <meta name="description" content="Вопрос с таким заголовком запостил один парень на хэшкоде. Здравствуйте. Вопрос из заголовка переписывать не буду. Интересуют реальные примеры, т.е. &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://vladimir-vg.github.io/blog/2012/12/18/does-c-always-better-than-cpp">
+  <link href="/favicon.ico" rel="icon">
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="code" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-28653731-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="no-sidebar"  >
+  <header role="banner"><hgroup>
+  <h1>code</h1>
+  
+    <h2><a href="/">run{}</a></h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:vladimir-vg.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Есть ли случаи, когда Си лучше C++?</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-18T10:43:00+03:00" pubdate data-updated="true">Dec 18<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Вопрос с <a href="http://hashcode.ru/questions/174571/">таким заголовком запостил один парень на хэшкоде</a>.</p>
+
+<blockquote>
+  <p>Здравствуйте. Вопрос из заголовка переписывать не буду.</p>
+
+  <p>Интересуют реальные примеры, т.е. не те, когда компилятора C++ под <em>какую-то</em> платформу нет.
+Различия, в несколько процентов, в производительности, несущественны.</p>
+
+  <p>Навеяно “мини-наездом” на C++ на <a href="http://habrahabr.ru/post/111403/">Хабре</a></p>
+
+  <p><strong>UPD:</strong> Кроме варианта, что C знаем лучше.</p>
+</blockquote>
+
+<p>В качестве ответа я накатал <a href="http://hashcode.ru/questions/174571#175019">небольшую простыню</a>,
+которая мне самому настолько понравилась, что решил что стоит её продублировать здесь.</p>
+
+<blockquote>
+  <p>Всем привет, расскажу почему я считаю что Си лучше C++. И почему надмножество над другим языком это не всегда хорошо.</p>
+
+  <p><img src="http://yosefk.com/c++fqa/images/cat.png" alt="C++ FQA" title="C++ FQA" /></p>
+
+  <p><a href="http://yosefk.com/c++fqa/">больше драмы</a></p>
+
+  <p>Язык программирования всегда имеет набор фич. Замечено, что чем меньше фич и чем больше соблюдается ортогональность, тем гибче и выразительнее сам язык, тем легче понимать код.</p>
+
+  <p>Возьмём к примеру Си: <strong>функции, структуры, указатели, макросы</strong>.
+По-большому счёту это всё, примитивные типы можно считать примером структуры из одного элемента. Довольно быстро привыкаешь и понимаешь как каждая из этих фич взаимодействует между собой:</p>
+
+  <ul>
+    <li><strong>функции, указатели</strong>: указатели на функции, функция принимающая указатели</li>
+    <li><strong>функции, структуры, указатели</strong>: структуры содержащие указатели на функции</li>
+  </ul>
+
+  <p>Макросы никак не взаимодействуют с другими, это просто препроцессор, поэтому тут всё понятно.</p>
+
+  <p>И так, можно довольно быстро начать понимать код на Си, т.к. в нём используется ограниченный набор ортогональных фич, хорошо взаимодействующих между собой.</p>
+
+  <p>Теперь рассмотрим C++: <strong>функции, структуры, указатели, макросы, классы, шаблоны, ссылки, исключения, операторы, методы</strong>.</p>
+
+  <p>Где есть неортогональные пары, которые очень похожи, частично дублируют своё назначение, из-за этого иногда может быть непонятно где какую из двух использовать, код где сталкиваются две фичи может выглядеть криво или быть труднопонятным:</p>
+
+  <ul>
+    <li><em>указатели и ссылки</em></li>
+    <li><em>структуры и классы</em></li>
+    <li><em>макросы и шаблоны</em></li>
+    <li><em>функции и методы</em></li>
+  </ul>
+
+  <p>Количество фич возросло, да ещё и половина из них неортогональна. Из-за этого программисту приходится делать выбор там, где в других языках за него выбрали проектировщики языка. C++ на порядок более сложный язык.</p>
+
+  <p>Может быть кто-то скажет: “Ну и фиг что сложный! Я умный, я осилю, я смогу управлять этой мощью!”, может и действительно осилит. Я бы избегал любых лишних мысленных телодвижений. </p>
+
+  <p>Си легче понимать и это серьёзное преимущество, в реальной жизни время и силы ограничены, если конечно их не тратить на троллинг на форумах, прихлебывая мамкин борщ.</p>
+</blockquote>
+
+<p>Такие дела.</p>
+
+<p>PS: Линус на словцо горяч и не так вежлив как я, и если не читали, то <a href="http://article.gmane.org/gmane.comp.version-control.git/57918">это стоит прочесть</a>.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/about" title="About the author (Gordeev Vladimir)" rel="author">Gordeev Vladimir</a></span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-18T10:43:00+03:00" pubdate data-updated="true">Dec 18<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/c/'>c</a>, <a class='category' href='/blog/categories/s-plus-plus/'>с++</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://vladimir-vg.github.io/blog/2012/12/18/does-c-always-better-than-cpp/" data-via="" data-counturl="http://vladimir-vg.github.io/blog/2012/12/18/does-c-always-better-than-cpp/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/11/24/blog-updated/" title="Previous Post: Немного привёл блог в порядок">&laquo; Немного привёл блог в порядок</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/01/22/restrict-interface-responders/" title="next Post: Как ограничить набор типов реализующих интерфейс в Go?">Как ограничить набор типов реализующих интерфейс в Go? &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Gordeev Vladimir -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'vladimir-vg-blog';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://vladimir-vg.github.io/blog/2012/12/18/does-c-always-better-than-cpp/';
+        var disqus_url = 'http://vladimir-vg.github.io/blog/2012/12/18/does-c-always-better-than-cpp/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

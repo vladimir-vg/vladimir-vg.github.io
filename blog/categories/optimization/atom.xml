@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: optimization | code]]></title>
+  <link href="http://vladimir-vg.github.io/blog/categories/optimization/atom.xml" rel="self"/>
+  <link href="http://vladimir-vg.github.io/"/>
+  <updated>2014-05-26T12:53:46+03:00</updated>
+  <id>http://vladimir-vg.github.io/</id>
+  <author>
+    <name><![CDATA[Gordeev Vladimir]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Пять правил Роба Пайка]]></title>
+    <link href="http://vladimir-vg.github.io/blog/2012/04/02/five-rules/"/>
+    <updated>2012-04-02T17:17:00+03:00</updated>
+    <id>http://vladimir-vg.github.io/blog/2012/04/02/five-rules</id>
+    <content type="html"><![CDATA[<p>Наткнулся на <a href="http://users.ece.utexas.edu/~adnan/pike.html">пять правил программирования</a>,
+написанных Робом Пайком:</p>
+
+<blockquote>
+  <ol>
+    <li>You can’t tell where a program is going to spend its time. Bottlenecks occur in surprising places, so don’t try to second guess and put in a speed hack until you’ve proven that’s where the bottleneck is.</li>
+    <li>Measure. Don’t tune for speed until you’ve measured, and even then don’t unless one part of the code overwhelms the rest.</li>
+    <li>Fancy algorithms are slow when n is small, and n is usually small. Fancy algorithms have big constants. Until you know that n is frequently going to be big, don’t get fancy. (Even if n does get big, use Rule 2 first.)</li>
+    <li>Fancy algorithms are buggier than simple ones, and they’re much harder to implement. Use simple algorithms as well as simple data structures.</li>
+    <li>Data dominates. If you’ve chosen the right data structures and organized things well, the algorithms will almost always be self-evident. Data structures, not algorithms, are central to programming.</li>
+  </ol>
+</blockquote>
+
+<p>Роб Пайк крутой чувак и я его очень уважаю. Он участвовал в разработке
+операционных систем <a href="http://www.vitanuova.com/inferno/">Inferno</a>,
+<a href="http://plan9.bell-labs.com/plan9/index.html">Plan 9</a>, а также языков
+<a href="http://doc.cat-v.org/plan_9/2nd_edition/papers/alef/">Alef</a>,
+<a href="http://www.vitanuova.com/inferno/limbo.html">Limbo</a>,
+<a href="http://en.wikipedia.org/wiki/Newsqueak">Newsqueak</a>
+и на данный момент занят языком <a href="http://golang.org/">Go</a>.</p>
+
+<p>Перевод этих пяти правил:</p>
+
+<ol>
+  <li>
+    <p>Никто не знает какая часть кода будет потреблять больше ресурсов.
+Узкие места бывает в совершенно неожиданных точках, поэтому не пытайтесь
+угадывать и как-то оптимизировать код до тех пор пока вы на деле не выяснили что эта часть действительно является узким местом.</p>
+  </li>
+  <li>
+    <p>Измеряйте. Не пытайтесь оптимизировать пока вы не провели измерений.
+И даже после этого, не оптимизируйте, пока не убедитесь что эта часть кода
+тяжелее всего остального.</p>
+  </li>
+  <li>
+    <p>Нетривиальные алгоритмы работают медленно если <script type="math/tex"> n </script> достаточно маленькое,
+и обычно именно так и случается. Зато в них достаточно большие константы
+сложности. Пока не убедитесь что <script type="math/tex"> n </script> будет достаточно большим, не усложняйте код
+нетривиальными алгоритмами. (И даже если <script type="math/tex"> n </script> достаточно велико,
+убедитесь что выполняется второе правило)</p>
+  </li>
+  <li>
+    <p>В нетривиальных алгоритмах гораздо легче ошибиться и их гораздо
+сложнее реализовать. Используйте простые алгоритмы и простые структуры данных.</p>
+  </li>
+  <li>
+    <p>Данные важнее кода. Если вы правильно подберёте структуры данных,
+то код будет почти очевидным. Именно данные являются главной вещью в программировании, а не код.</p>
+  </li>
+</ol>
+
+<p>Повесил на стенку.</p>
+]]></content>
+  </entry>
+  
+</feed>

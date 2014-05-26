@@ -1,0 +1,283 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>ActiveRecord Store в Rails 3.2 - code</title>
+  <meta name="author" content="Gordeev Vladimir">
+
+  
+  <meta name="description" content="Недавно довелось пользоваться store-атрибутами которые появились в последних
+рельсах. На самом деле store-атрибуты довольно простая вещь: это поле в &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://vladimir-vg.github.io/blog/2012/05/24/activerecord-3.2-store">
+  <link href="/favicon.ico" rel="icon">
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="code" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-28653731-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="no-sidebar"  >
+  <header role="banner"><hgroup>
+  <h1>code</h1>
+  
+    <h2><a href="/">run{}</a></h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:vladimir-vg.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">ActiveRecord Store в Rails 3.2</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-24T09:21:00+03:00" pubdate data-updated="true">May 24<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Недавно довелось пользоваться <code>store</code>-атрибутами которые появились в последних
+рельсах. На самом деле <code>store</code>-атрибуты довольно простая вещь: это поле в
+таблице типа <code>text</code>, которое хранит сложные данные сериализованные в текстовом формате.
+Подобное может быть очень полезно для множества различных настроек, для которых
+не хочется создавать по отдельному столбцу в таблице.</p>
+
+<p>Т.к. это просто кусок сериализованных данных, то никакого индексирования и поиска
+по полям само-собой нет.
+(В отличие от документно-ориентированной <a href="http://www.mongodb.org/">MongoDB</a>)</p>
+
+<p>Вроде бы ничего особенного, главная фича в том, что с полями хранимыми с помощью
+<code>store</code> можно работать также как с обычными полями: использовать в формах,
+проводить валидацию. Примеры использования можно увидеть
+<a href="http://web-l.nl/posts/12-rails-3-2-active-record-s-store">здесь</a>,
+<a href="http://yearofmoo.com/2012/01/rails-3-2-and-active-record-store/">здесь</a> и
+<a href="http://blog.rawonrails.com/2012/02/using-activerecordstore-with-rails-32.html">здесь</a>.</p>
+
+<p>Мне понадобилось реализовать хранение расписания в таблице, просто набор
+промежутков времени для каждого дня. Не хотелось создавать отдельную таблицу
+для промежутков, гораздо проще было бы просто сериализовать через <code>store</code>.</p>
+
+<p>Однако вылезла следующая проблема: непонятно как работать с этими данными на
+клиентской стороне, через формы. Значения <code>store</code>-полей выводились как есть,
+используя ruby-синтаксис, тогда как мне нужен был JSON.</p>
+
+<p>К примеру</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="keyword">class</span> <span class="class">Activity</span> &lt; <span class="constant">ActiveRecord</span>::<span class="constant">Base</span>
+  store <span class="symbol">:schedule</span>, <span class="key">accessors</span>: [<span class="symbol">:monday</span>]
+<span class="keyword">end</span>
+</pre></div>
+</div>
+</div>
+
+<p>и если присвоить полю <code>monday</code> значение <code>[{:start =&gt; "01:00am", :end =&gt; "02:00am"}]</code>
+и вывести в форме через <code>&lt;%= f.input :monday %&gt;</code> то значение будет обычная
+строка <code>[{:start =&gt; "01:00am", :end =&gt; "02:00am"}]</code>, тогда как мне нужны данные
+в формате JSON для более удобной работы через JavaScript.</p>
+
+<p>Сделал небольшой хак, позволяющий присваивать и получать JSON.</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="keyword">class</span> <span class="class">Activity</span> &lt; <span class="constant">ActiveRecord</span>::<span class="constant">Base</span>
+  store <span class="symbol">:schedule</span>
+
+  <span class="keyword">def</span> <span class="function">schedule</span>
+    map = <span class="predefined-constant">self</span>[<span class="symbol">:schedule</span>].map { |day, value| [day, JSON(value)] }
+    <span class="constant">Hash</span>[map]
+  <span class="keyword">end</span>
+
+  [<span class="symbol">:monday</span>].each <span class="keyword">do</span> |day|
+    define_method(<span class="symbol"><span class="symbol">:</span><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">#{</span>day<span class="inline-delimiter">}</span></span><span class="content">=</span><span class="delimiter">&quot;</span></span>) <span class="keyword">do</span> |value|
+      value = value.to_json <span class="keyword">unless</span> value.kind_of? <span class="constant">String</span>
+      <span class="predefined-constant">self</span>[<span class="symbol">:schedule</span>][day] = value
+    <span class="keyword">end</span>
+
+    define_method(day) <span class="keyword">do</span>
+      <span class="predefined-constant">self</span>[<span class="symbol">:schedule</span>][day]
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+</pre></div>
+</div>
+</div>
+
+<p>Теперь можно получать и присваивать JSON через обычные accessors, а к объектам
+обращаться с помощью <code>.schedule[:monday]</code>.</p>
+
+<p>Не самое элегантное решение, но проблему решает.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/about" title="About the author (Gordeev Vladimir)" rel="author">Gordeev Vladimir</a></span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-24T09:21:00+03:00" pubdate data-updated="true">May 24<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/activerecord/'>activerecord</a>, <a class='category' href='/blog/categories/rails/'>rails</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://vladimir-vg.github.io/blog/2012/05/24/activerecord-3.2-store/" data-via="" data-counturl="http://vladimir-vg.github.io/blog/2012/05/24/activerecord-3.2-store/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/04/02/five-rules/" title="Previous Post: Пять правил Роба Пайка">&laquo; Пять правил Роба Пайка</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/05/29/mustache-overview/" title="next Post: Mustache, шаблонизатор лишённый логики">Mustache, шаблонизатор лишённый логики &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Gordeev Vladimir -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'vladimir-vg-blog';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://vladimir-vg.github.io/blog/2012/05/24/activerecord-3.2-store/';
+        var disqus_url = 'http://vladimir-vg.github.io/blog/2012/05/24/activerecord-3.2-store/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

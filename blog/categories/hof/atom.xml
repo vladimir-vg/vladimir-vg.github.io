@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: hof | code]]></title>
+  <link href="http://vladimir-vg.github.io/blog/categories/hof/atom.xml" rel="self"/>
+  <link href="http://vladimir-vg.github.io/"/>
+  <updated>2014-05-26T12:53:46+03:00</updated>
+  <id>http://vladimir-vg.github.io/</id>
+  <author>
+    <name><![CDATA[Gordeev Vladimir]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Сравнение функций в Go]]></title>
+    <link href="http://vladimir-vg.github.io/blog/2012/03/10/compare-funcs-in-go/"/>
+    <updated>2012-03-10T11:26:00+03:00</updated>
+    <id>http://vladimir-vg.github.io/blog/2012/03/10/compare-funcs-in-go</id>
+    <content type="html"><![CDATA[<p>Мне всегда казалось естественным сравнивать функции в языках с поддержкой
+ФВП. Понятное дело, что сравнить ведут ли себя функции одинаково, в одинаковый
+код ли они скомпилировались дело сложное и, в действительности, не нужное.
+Но почему бы не сравнивать их указатели? Возвращать <code>true</code> когда это
+гарантированно так.</p>
+
+<p>Некоторое время назад, разбираясь с <a href="http://www.haskell.org/">Haskell</a> я поднимал
+<a href="http://www.linux.org.ru/forum/development/5452398">тему на ЛОРе</a>.</p>
+
+<p>Сейчас пишу небольшой проект на <a href="http://golang.org/">Go</a> и наткнулся на ту же
+проблему. Даже
+<a href="https://groups.google.com/d/topic/golang-nuts/CSS0pB8KwhQ/discussion">задал вопрос в списке рассылки</a>,
+и в ходе обсуждения выяснилось что это может связать руки компилятору в
+создании некоторых оптимизаций. (Например если компилятор захочет сделать inline).</p>
+
+<p>Так что этого стоит избегать.</p>
+
+<p>Пока я выяснял степень православности сравнения указателей функций, я накалякал
+вот такой костылик:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="keyword">package</span> main
+
+<span class="keyword">import</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">reflect</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">import</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">fmt</span><span class="delimiter">&quot;</span></span>
+
+<span class="keyword">func</span> f() {}
+<span class="keyword">func</span> g() {}
+
+<span class="keyword">func</span> equals(f, g <span class="keyword">interface</span>{}) <span class="predefined-type">bool</span> {
+    fPtr := reflect.ValueOf(f).Pointer()
+    gPtr := reflect.ValueOf(g).Pointer()
+    <span class="keyword">return</span> fPtr == gPtr
+}
+
+<span class="keyword">func</span> main() {
+    <span class="keyword">if</span> equals(f, g) {
+        fmt.Println(<span class="string"><span class="delimiter">&quot;</span><span class="content">f and g are equal!</span><span class="delimiter">&quot;</span></span>)
+    } <span class="keyword">else</span> {
+        fmt.Println(<span class="string"><span class="delimiter">&quot;</span><span class="content">f and g are not equal.</span><span class="delimiter">&quot;</span></span>)
+    }
+}
+</pre></div>
+</div>
+</div>
+
+<p>Ответ разумеется <code>"f and g are not equal."</code>.</p>
+]]></content>
+  </entry>
+  
+</feed>

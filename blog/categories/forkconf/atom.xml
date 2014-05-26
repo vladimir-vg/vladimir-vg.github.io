@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: forkconf | code]]></title>
+  <link href="http://vladimir-vg.github.io/blog/categories/forkconf/atom.xml" rel="self"/>
+  <link href="http://vladimir-vg.github.io/"/>
+  <updated>2014-05-26T12:53:46+03:00</updated>
+  <id>http://vladimir-vg.github.io/</id>
+  <author>
+    <name><![CDATA[Gordeev Vladimir]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[«Ненормальное ООП». Выступление на калининградской конфе ForkConf]]></title>
+    <link href="http://vladimir-vg.github.io/blog/2013/03/05/forkconf-oop-talk/"/>
+    <updated>2013-03-05T19:07:00+03:00</updated>
+    <id>http://vladimir-vg.github.io/blog/2013/03/05/forkconf-oop-talk</id>
+    <content type="html"><![CDATA[<p>3 марта, два дня назад мне довелось выступать на местной калининградской
+IT-конференции под названием <a href="http://www.forkconf.ru/">ForkConf</a>.
+<a href="http://www.forkconf.ru/2013/03/old-good-time.html">Анонс</a>.</p>
+
+<p>Саму презентацию можно <a href="http://vladimir-vg.github.com/forkconf-oop-talk">увидеть здесь</a>. <a href="https://github.com/vladimir-vg/forkconf-oop-talk">А здесь лежат её исходники</a>. </p>
+
+<p>Тема выступления – «Ненормальное ООП». Я осознаю что на данный момент
+львиная доля программистов посещающих конфу пишут на PHP, Java, C++, C#.
+Подумал, что было бы весело взорвать их мозг разными гибкими возможностями
+доступными в других языках. =)</p>
+
+<p>Так как я зарабатываю на хлеб использую Ruby on Rails, и лучше всего знаю именно
+Ruby, то и код на слайдах почти весь на Ruby.</p>
+
+<p>Выступление получилось довольно поверхностным, более глубоко стоит рассказывать
+для более подготовленной аудитории. Пока так.</p>
+
+<p>Затронул тему прототипов, классов как объектов. Рассказал про миксины и трейты.
+Ещё показал в чём разница между посылкой сообщения и простым вызовом метода.</p>
+
+<p>Ещё хотел рассказать про декомпозицию классов и методов (как в CLOS и Factor),
+а также про метаклассы, но понял что это будет слишком толсто и лучше в другой раз.</p>
+
+<p>Это моё первое выступление такого рода, поэтому я слишком торопился рассказывая,
+и похоже не давал времени аудитории переварить код на слайдах. Кроме того,
+похоже нужно гораздо больше кода, больше примеров, чтобы было рельно понятно.</p>
+
+<p>Такие дела.</p>
+]]></content>
+  </entry>
+  
+</feed>

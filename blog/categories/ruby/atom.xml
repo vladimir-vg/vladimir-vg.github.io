@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ruby | code]]></title>
+  <link href="http://vladimir-vg.github.io/blog/categories/ruby/atom.xml" rel="self"/>
+  <link href="http://vladimir-vg.github.io/"/>
+  <updated>2014-05-26T12:53:46+03:00</updated>
+  <id>http://vladimir-vg.github.io/</id>
+  <author>
+    <name><![CDATA[Gordeev Vladimir]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Странное поведение выражения с if в Ruby]]></title>
+    <link href="http://vladimir-vg.github.io/blog/2012/03/11/strange-ruby-if/"/>
+    <updated>2012-03-11T15:37:00+03:00</updated>
+    <id>http://vladimir-vg.github.io/blog/2012/03/11/strange-ruby-if</id>
+    <content type="html"><![CDATA[<p>Первым делом код:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="keyword">class</span> <span class="class">A</span>
+  <span class="keyword">def</span> <span class="function">foo</span>
+    <span class="symbol">:method_value</span>
+  <span class="keyword">end</span>
+
+  <span class="keyword">def</span> <span class="function">bar</span>
+    foo = <span class="symbol">:variable_value</span> <span class="keyword">if</span> <span class="predefined-constant">false</span>
+    foo
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre></div>
+</div>
+</div>
+
+<p>Если мы используем локальную переменную с таким же именем как и метод, то
+метод перекрывается ею. В приведённом коде я ожидал возврата <code>:method_value</code>,
+т.к. мы не используем переменную <code>foo</code>. Метод <code>bar</code> возвращает <code>nil</code>.
+Забавно, правда?</p>
+
+<p>Переиначил приведённый выше пример, но получил тот же результат:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="keyword">class</span> <span class="class">A</span>
+  <span class="keyword">def</span> <span class="function">foo</span>
+    <span class="symbol">:method_value</span>
+  <span class="keyword">end</span>
+
+  <span class="keyword">def</span> <span class="function">bar</span>
+    <span class="keyword">if</span> <span class="predefined-constant">false</span>
+      foo = <span class="symbol">:variable_value</span>
+    <span class="keyword">end</span>
+    foo
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre></div>
+</div>
+</div>
+
+<p>Наверное эта «фича» находится в родственных связях с багом описанном в весёлом
+<a href="https://www.destroyallsoftware.com/talks/wat">WAT видео</a>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>1.9.2p290 :001 &gt; a
+NameError: undefined local variable or method `a' for main:Object
+1.9.2p290 :002 &gt; b
+NameError: undefined local variable or method `b' for main:Object
+1.9.2p290 :003 &gt; a = b
+NameError: undefined local variable or method `b' for main:Object
+1.9.2p290 :004 &gt; a
+ =&gt; nil
+</pre></div>
+</div>
+</div>
+
+<p>После того как мы просто попытались использовать необъявленные переменные одна
+из них магическим образом объявилась.</p>
+
+<p>WAT?</p>
+]]></content>
+  </entry>
+  
+</feed>

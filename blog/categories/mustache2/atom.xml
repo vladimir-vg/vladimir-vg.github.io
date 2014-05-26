@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: mustache2 | code]]></title>
+  <link href="http://vladimir-vg.github.io/blog/categories/mustache2/atom.xml" rel="self"/>
+  <link href="http://vladimir-vg.github.io/"/>
+  <updated>2014-05-26T12:53:46+03:00</updated>
+  <id>http://vladimir-vg.github.io/</id>
+  <author>
+    <name><![CDATA[Gordeev Vladimir]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Mustache, шаблонизатор лишённый логики]]></title>
+    <link href="http://vladimir-vg.github.io/blog/2012/05/29/mustache-overview/"/>
+    <updated>2012-05-29T12:53:00+03:00</updated>
+    <id>http://vladimir-vg.github.io/blog/2012/05/29/mustache-overview</id>
+    <content type="html"><![CDATA[<p>Наверное вы уже видели <a href="http://mustache.github.com/">Mustache</a>?
+Это удобный шаблонизатор, имеющий множество реализаций для различных платформ
+и исповедующий принцип: «Шаблоны без логики» (logic-less templates).
+Сейчас немного расскажу что это такое и почему это круто.</p>
+
+<p>Если вы когда-нибудь видели простыню php-кода где весело перемешаны вызовы к
+БД, обращения к каким-то глобальным переменным, вывод html-шаблона – всё-всё
+строк эдак в тыщу? Я видел. Это добро к тому же это ещё и постоянно ломалось
+где-то посередине.</p>
+
+<p>Подобные вещи оставляют глубокое впечатление а также ясное понимание что код
+<em>нужно</em> структурировать всегда (например с помощью MVC, может как-то иначе),
+кроме редчайших случаев.</p>
+
+<p>Mustache – это шаг в сторону большей структуризации. В PHP нет чёткого
+разделения на обычный код и html-шаблоны, в <a href="http://rubyonrails.org/">Ruby/Rails</a>
+есть erb для шаблонов, но даже там можно наварить кашу. Если вы используете Mustache
+у вас просто нет шансов. Код отдельно, шаблоны отдельно,
+только так, только хардкор! Вы даже не можете вызвать какой-то фильтр в шаблоне,
+такой код необходимо писать вне шаблона.</p>
+
+<p>Шаблонизатор принимает <a href="http://www.json.org/">JSON</a>-подобную структуру (вложенные словари, списки; строки, числа)
+и буквально отображает данные на шаблон (разговорным языком, маппит).</p>
+
+<p>Вот пара примеров:</p>
+
+<!--more-->
+
+<div><div class="CodeRay">
+  <div class="code"><pre>Welcome, would you like some coffee?
+
+{{#drinks?}}
+  We can offer some of this:
+  {{#drinks}}
+    {{name}}
+    {{#alcohol?}}
+      (only if you older 21)
+    {{/alcohol?}}
+  {{/drinks}}
+{{/drinks?}}
+</pre></div>
+</div>
+</div>
+
+<p>Это собственно шаблон.
+Ниже несколько примеров входных данных (в формате <a href="http://yaml.org/">YAML</a>) и результата.</p>
+
+<p>Здесь <code>drinks?</code> обычное поле, используется для проверки существования списка.
+(Да, это один из костылей которые планируется исправить в Mustache 2.0)</p>
+
+<p>Если попить нечего:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="head"><span class="head">---</span></span>
+<span class="key">drinks?</span>: <span class="string"><span class="content">true</span></span>
+<span class="key">drinks</span>: <span class="string"><span class="content">[]</span></span>
+<span class="head"><span class="head">---</span></span>
+</pre></div>
+</div>
+</div>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>Welcome, would you like some milk?
+
+  We can offer some of this:
+</pre></div>
+</div>
+</div>
+
+<p>Если таки есть:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="head"><span class="head">---</span></span>
+<span class="key">drinks?</span>: <span class="string"><span class="content">true</span></span>
+<span class="key">drinks</span>:
+  - <span class="string"><span class="content">{ name: wine, alcohol?: true }</span></span>
+  - <span class="string"><span class="content">{ name: milk }</span></span>
+<span class="head"><span class="head">---</span></span>
+</pre></div>
+</div>
+</div>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>Welcome, would you like some milk?
+
+  We can offer some of this:
+    wine
+      (only if you older 21)
+    milk
+</pre></div>
+</div>
+</div>
+
+<p>Вот занятный пример того как работает вложенность контекстов, можно определить
+<code>alcohol?</code> в самом верху (будет как по-умолчанию), и для различных частей
+входных данных переопределять значение:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="head"><span class="head">---</span></span>
+<span class="key">drinks?</span>: <span class="string"><span class="content">true</span></span>
+<span class="key">drinks</span>:
+  - <span class="string"><span class="content">{ name: wine }</span></span>
+  - <span class="string"><span class="content">{ name: milk, alcohol?: false }</span></span>
+<span class="key">alcohol?</span>: <span class="string"><span class="content">true</span></span>
+<span class="head"><span class="head">---</span></span>
+</pre></div>
+</div>
+</div>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>Welcome, would you like some milk?
+
+  We can offer some of this:
+    wine
+      (only if you older 21)
+    milk
+</pre></div>
+</div>
+</div>
+
+<p>Вообще тэг <code>{&#123;&#35;thing}}</code> работает следующим образом:</p>
+
+<ul>
+  <li>Если это словарь, то отрисовать содержимое используя новый контекст, с этим
+словарём.</li>
+  <li>Если это список, то сделать то же что для обычного значения,
+но для каждого элемента.</li>
+  <li>Если <code>thing</code> ложное значение или пустой список – проигнорировать содержимое.</li>
+  <li>Если не ложное, но не словарь и не список, просто отрисовать содержимое.</li>
+</ul>
+
+<p>Вот пример того, как можно отрисовать один элемент (не список из одного),
+хотя изначально шаблон писался в надежде что <code>drinks</code> таки будет списком.</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="head"><span class="head">---</span></span>
+<span class="key">drinks?</span>: <span class="string"><span class="content">true</span></span>
+<span class="key">drinks</span>: <span class="string"><span class="content">{ name: wine, alcohol?: true }</span></span>
+<span class="head"><span class="head">---</span></span>
+</pre></div>
+</div>
+</div>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>Welcome, would you like some milk?
+
+  We can offer some of this:
+    wine
+      (only if you older 21)
+</pre></div>
+</div>
+</div>
+
+<p>Разумеется у таких шаблонов есть плюсы:</p>
+
+<ul>
+  <li>Можно использовать на серверной стороне, а также скомпилировать в js-код
+и отрисовывать в браузере данные, стянутые с помощью AJAX.
+Удобно и не приходится дублировать код.</li>
+  <li>Можно удобно верстать с правдоподобными тестовыми данными, (на другой платформе)
+а потом легко подключить в проект. На случай если ваш верстальщик вендузятник.</li>
+  <li>Приятно работать с одним шаблонизатором в разных проектах, на разных платформах.</li>
+  <li>Структуризация и разбиение есть дело православное. Меньше бардака, больше
+порядка.</li>
+</ul>
+
+<p>и минусы:</p>
+
+<ul>
+  <li>Вынуждает городить отдельные модули для какой-то мелкой фигни.
+По-началу раздражает.</li>
+  <li>Если не получается выразить что необходимо с помощью данных и набора partials,
+то приходится городить уродливые костыли. У самого не случалось, но примеры
+в сети встречались.</li>
+</ul>
+
+<p>На данный момент потихоньку <a href="http://writing.jan.io/mustache-2.0.html">назревает движуха</a>,
+желание исправить некоторые косяки в дизайне Mustache и родить на свет заново
+в виде Mustache 2.0.</p>
+
+<p><a href="https://github.com/vladimir-vg/elk.erl">Вот здесь</a> потихоньку пилю реализацию
+mustache на Erlang. (Рабочая версия будет объявлена отдельным постом)
+Та что указывается как официальная (<a href="https://github.com/mojombo/mustache.erl">mustache.erl</a>)
+недостаточно фитчастая.</p>
+]]></content>
+  </entry>
+  
+</feed>

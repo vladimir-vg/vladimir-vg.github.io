@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: go | code]]></title>
+  <link href="http://vladimir-vg.github.io/blog/categories/go/atom.xml" rel="self"/>
+  <link href="http://vladimir-vg.github.io/"/>
+  <updated>2014-05-26T12:53:46+03:00</updated>
+  <id>http://vladimir-vg.github.io/</id>
+  <author>
+    <name><![CDATA[Gordeev Vladimir]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Как ограничить набор типов реализующих интерфейс в Go?]]></title>
+    <link href="http://vladimir-vg.github.io/blog/2013/01/22/restrict-interface-responders/"/>
+    <updated>2013-01-22T00:01:00+03:00</updated>
+    <id>http://vladimir-vg.github.io/blog/2013/01/22/restrict-interface-responders</id>
+    <content type="html"><![CDATA[<p>Когда есть свободное время я разбираюсь с языком Go, пытаюсь разобраться с его
+внутренностями, пытаюсь писать какие-то проекты с его помощью.</p>
+
+<p>В Go вводится ряд новшеств, которых нет в других хорошо развитых и популярных
+языках. Соответственно, код на Go не похож на код на Java или C++, слишком уж
+разный набор фич, совсем другие средства выражения.</p>
+
+<p>Наткнулся на прикольный способ искусственно ограничить список типов
+удовлетворяющих интерфейсу.</p>
+
+<h1 id="section">Ограничение набора типов реализующих конкретный интерфейс</h1>
+
+<p>К примеру если хочется использовать в своей <code>FooFunc</code> функции параметр <code>a</code>,
+так, чтобы a мог быть разных типов, но при этом нет одного интерфейса их объединяющего,
+с помощью которого можно было бы абстрагироваться.
+В таких случаях используют тип <code>interface{}</code></p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="keyword">func</span> FooFunc(a <span class="keyword">interface</span>{}) {
+    <span class="comment">// do what ever you want</span>
+}
+</pre></div>
+</div>
+</div>
+
+<p>Но так как как функция публичная, видимая извне, то может оказаться так,
+что в качестве <code>a</code> передадут не то значение что ожидает ваш код.</p>
+
+<p>Как раз на этот случай есть следующий трюк, можно объявить специальный интерфейс,
+который требует реализации лишь одного приватного метода-заглушки. Далее можно
+объявить методы для типов которые хочется использовать, тогда тип <code>a</code> будет
+проверяться на стадии компиляции.</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="keyword">type</span> aTypeInterface <span class="keyword">interface</span> {
+    aMethod()
+}
+
+<span class="keyword">func</span> FooFunc(a aTypeInterface) {
+    <span class="comment">// do what ever you want</span>
+}
+
+<span class="keyword">func</span> (bType) aMethod(){}
+<span class="keyword">func</span> (cType) aMethod(){}
+<span class="keyword">func</span> (dType) aMethod(){}
+</pre></div>
+</div>
+</div>
+
+<p>Теперь параметр <code>a</code> в функции <code>FooFunc</code> может быть лишь одним из указанных
+типов: <code>bType</code>, <code>cType</code>, <code>dType</code>, и это проверяется на стадии компиляции.</p>
+
+<p>Наткнулся на такой код в пакете стандартной библиотеки <code>go/ast/ast.go</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="comment">/* ... skipped ... */</span>
+
+<span class="comment">// All node types implement the Node interface.</span>
+<span class="keyword">type</span> Node <span class="keyword">interface</span> {
+    Pos() token.Pos <span class="comment">// position of first character belonging to the node</span>
+    End() token.Pos <span class="comment">// position of first character immediately after the node</span>
+}
+
+<span class="comment">// All statement nodes implement the Stmt interface.</span>
+<span class="keyword">type</span> Stmt <span class="keyword">interface</span> {
+    Node
+    stmtNode()
+}
+
+<span class="comment">/* ... skipped ... */</span>
+
+<span class="comment">// stmtNode() ensures that only statement nodes can be</span>
+<span class="comment">// assigned to a StmtNode.</span>
+<span class="comment">//</span>
+<span class="keyword">func</span> (*BadStmt) stmtNode()        {}
+<span class="keyword">func</span> (*DeclStmt) stmtNode()       {}
+<span class="keyword">func</span> (*EmptyStmt) stmtNode()      {}
+<span class="keyword">func</span> (*LabeledStmt) stmtNode()    {}
+<span class="keyword">func</span> (*ExprStmt) stmtNode()       {}
+<span class="keyword">func</span> (*SendStmt) stmtNode()       {}
+<span class="keyword">func</span> (*IncDecStmt) stmtNode()     {}
+<span class="keyword">func</span> (*AssignStmt) stmtNode()     {}
+<span class="keyword">func</span> (*GoStmt) stmtNode()         {}
+<span class="keyword">func</span> (*DeferStmt) stmtNode()      {}
+<span class="keyword">func</span> (*ReturnStmt) stmtNode()     {}
+<span class="keyword">func</span> (*BranchStmt) stmtNode()     {}
+<span class="keyword">func</span> (*BlockStmt) stmtNode()      {}
+<span class="keyword">func</span> (*IfStmt) stmtNode()         {}
+<span class="keyword">func</span> (*CaseClause) stmtNode()     {}
+<span class="keyword">func</span> (*SwitchStmt) stmtNode()     {}
+<span class="keyword">func</span> (*TypeSwitchStmt) stmtNode() {}
+<span class="keyword">func</span> (*CommClause) stmtNode()     {}
+<span class="keyword">func</span> (*SelectStmt) stmtNode()     {}
+<span class="keyword">func</span> (*ForStmt) stmtNode()        {}
+<span class="keyword">func</span> (*RangeStmt) stmtNode()      {}
+</pre></div>
+</div>
+</div>
+
+<p>Пример именно такого подхода</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[rename watcher -> go-retest]]></title>
+    <link href="http://vladimir-vg.github.io/blog/2012/03/17/go-retest-repository/"/>
+    <updated>2012-03-17T16:46:00+03:00</updated>
+    <id>http://vladimir-vg.github.io/blog/2012/03/17/go-retest-repository</id>
+    <content type="html"><![CDATA[<p>Небольшой watcher описанный <a href="/blog/2012/03/14/test-runner-watcher-for-go/">в предыдущем посте</a>
+теперь называется <code>go-retest</code>, вызывается одноимённой командой и живёт по
+адресу: <a href="https://bitbucket.org/vladimir_vg/go-retest">https://bitbucket.org/vladimir_vg/go-retest</a></p>
+
+<p>На самом деле там почти нет ничего такого особенного, из-за чего стоило
+заводить отдельный репозиторий. Тем не менее, вещь в быту полезная, может
+будет постепенно обрастать фичами. (например анализ сорцов, вызов только необходимых тестов).</p>
+
+<p>Чем чёрт не шутит.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Постоянный прогон тестов для Go]]></title>
+    <link href="http://vladimir-vg.github.io/blog/2012/03/14/test-runner-watcher-for-go/"/>
+    <updated>2012-03-14T01:20:00+03:00</updated>
+    <id>http://vladimir-vg.github.io/blog/2012/03/14/test-runner-watcher-for-go</id>
+    <content type="html"><![CDATA[<p>Понадобилась мне небольшая тулза, которая бы перезапускала тесты при изменениях
+кода, а также уведомляла об ошибках. Проще говоря мне нужено что-то вроде
+<a href="https://github.com/seattlerb/autotest-rails">autotest для Rails</a> или
+<a href="https://github.com/mynyml/watchr">watchr</a>.</p>
+
+<p>Накидал небольшой код который мониторит все <code>*.go</code> файлы и запускает тексты.
+Использовал последний свежий Go из репозитория. Использовал команду <code>notify-send</code> для системных
+уведомлений, гарантированно работает на Ubuntu Oneric 11.10. Если есть у кого
+желание, то можно форкнуть <a href="https://gist.github.com/2032240">gist</a> и добавить
+функции системного уведомления для вашей системы.</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="keyword">package</span> main
+
+<span class="keyword">import</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">log</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">import</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">os</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">import</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">regexp</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">import</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">os/exec</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">import</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">exp/inotify</span><span class="delimiter">&quot;</span></span>
+
+<span class="keyword">func</span> runTests() {
+    cmd := exec.Command(<span class="string"><span class="delimiter">&quot;</span><span class="content">go</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">test</span><span class="delimiter">&quot;</span></span>)
+    cmd.Stdout = os.Stdout
+    <span class="keyword">if</span> err := cmd.Run(); err != <span class="predefined-constant">nil</span> {
+        log.Println(err)
+        notifySystem(<span class="string"><span class="delimiter">&quot;</span><span class="content">go test failed</span><span class="delimiter">&quot;</span></span>)
+    }
+}
+
+<span class="comment">// probably will work only for Ubuntu</span>
+<span class="keyword">func</span> notifySystem(message <span class="predefined-type">string</span>) {
+    cmd := exec.Command(<span class="string"><span class="delimiter">&quot;</span><span class="content">notify-send</span><span class="delimiter">&quot;</span></span>, message)
+    <span class="keyword">if</span> err := cmd.Run(); err != <span class="predefined-constant">nil</span> {
+        log.Fatal(err)
+    }
+}
+
+<span class="keyword">func</span> setupWatcher() *inotify.Watcher {
+    watcher, err := inotify.NewWatcher()
+    <span class="keyword">if</span> err != <span class="predefined-constant">nil</span> {
+        log.Fatal(err)
+    }
+
+    err = watcher.AddWatch(<span class="string"><span class="delimiter">&quot;</span><span class="content">.</span><span class="delimiter">&quot;</span></span>, inotify.IN_MODIFY)
+    <span class="keyword">if</span> err != <span class="predefined-constant">nil</span> {
+        log.Fatal(err)
+    }
+
+    <span class="keyword">return</span> watcher
+}
+
+<span class="keyword">func</span> main() {
+    watcher := setupWatcher()
+
+    runTests()
+    <span class="keyword">for</span> {
+        <span class="keyword">select</span> {
+        <span class="keyword">case</span> ev := &lt;-watcher.Event:
+            matched, err := regexp.MatchString(<span class="string"><span class="delimiter">&quot;</span><span class="content">.*</span><span class="char">\\</span><span class="content">.go</span><span class="delimiter">&quot;</span></span>, ev.Name)
+            <span class="keyword">if</span> err != <span class="predefined-constant">nil</span> {
+                log.Fatal(err)
+            }
+
+            <span class="keyword">if</span> matched {
+                <span class="comment">// On my machine it always raised two events</span>
+                <span class="comment">// ignore second, prevent twice tests run.</span>
+                <span class="comment">// Probably it's depends of test editor.</span>
+                <span class="comment">// If so, feel free to</span>
+                <span class="comment">// remove line above:</span>
+                &lt;-watcher.Event
+
+                runTests()
+            }
+        <span class="keyword">case</span> err := &lt;-watcher.Error:
+            log.Println(<span class="string"><span class="delimiter">&quot;</span><span class="content">error:</span><span class="delimiter">&quot;</span></span>, err)
+        }
+    }
+}
+</pre></div>
+</div>
+</div>
+
+<p><strong>UPD:</strong> Теперь watcher живёт по адресу:
+<a href="https://bitbucket.org/vladimir_vg/go-retest">https://bitbucket.org/vladimir_vg/go-retest</a>.
+Подробнее <a href="/blog/2012/03/17/go-retest-repository/">в следующем посте</a>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Сравнение функций в Go]]></title>
+    <link href="http://vladimir-vg.github.io/blog/2012/03/10/compare-funcs-in-go/"/>
+    <updated>2012-03-10T11:26:00+03:00</updated>
+    <id>http://vladimir-vg.github.io/blog/2012/03/10/compare-funcs-in-go</id>
+    <content type="html"><![CDATA[<p>Мне всегда казалось естественным сравнивать функции в языках с поддержкой
+ФВП. Понятное дело, что сравнить ведут ли себя функции одинаково, в одинаковый
+код ли они скомпилировались дело сложное и, в действительности, не нужное.
+Но почему бы не сравнивать их указатели? Возвращать <code>true</code> когда это
+гарантированно так.</p>
+
+<p>Некоторое время назад, разбираясь с <a href="http://www.haskell.org/">Haskell</a> я поднимал
+<a href="http://www.linux.org.ru/forum/development/5452398">тему на ЛОРе</a>.</p>
+
+<p>Сейчас пишу небольшой проект на <a href="http://golang.org/">Go</a> и наткнулся на ту же
+проблему. Даже
+<a href="https://groups.google.com/d/topic/golang-nuts/CSS0pB8KwhQ/discussion">задал вопрос в списке рассылки</a>,
+и в ходе обсуждения выяснилось что это может связать руки компилятору в
+создании некоторых оптимизаций. (Например если компилятор захочет сделать inline).</p>
+
+<p>Так что этого стоит избегать.</p>
+
+<p>Пока я выяснял степень православности сравнения указателей функций, я накалякал
+вот такой костылик:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="keyword">package</span> main
+
+<span class="keyword">import</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">reflect</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">import</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">fmt</span><span class="delimiter">&quot;</span></span>
+
+<span class="keyword">func</span> f() {}
+<span class="keyword">func</span> g() {}
+
+<span class="keyword">func</span> equals(f, g <span class="keyword">interface</span>{}) <span class="predefined-type">bool</span> {
+    fPtr := reflect.ValueOf(f).Pointer()
+    gPtr := reflect.ValueOf(g).Pointer()
+    <span class="keyword">return</span> fPtr == gPtr
+}
+
+<span class="keyword">func</span> main() {
+    <span class="keyword">if</span> equals(f, g) {
+        fmt.Println(<span class="string"><span class="delimiter">&quot;</span><span class="content">f and g are equal!</span><span class="delimiter">&quot;</span></span>)
+    } <span class="keyword">else</span> {
+        fmt.Println(<span class="string"><span class="delimiter">&quot;</span><span class="content">f and g are not equal.</span><span class="delimiter">&quot;</span></span>)
+    }
+}
+</pre></div>
+</div>
+</div>
+
+<p>Ответ разумеется <code>"f and g are not equal."</code>.</p>
+]]></content>
+  </entry>
+  
+</feed>

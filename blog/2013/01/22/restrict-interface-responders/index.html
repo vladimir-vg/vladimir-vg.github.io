@@ -1,0 +1,314 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Как ограничить набор типов реализующих интерфейс в Go? - code</title>
+  <meta name="author" content="Gordeev Vladimir">
+
+  
+  <meta name="description" content="Когда есть свободное время я разбираюсь с языком Go, пытаюсь разобраться с его
+внутренностями, пытаюсь писать какие-то проекты с его помощью. В Go &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://vladimir-vg.github.io/blog/2013/01/22/restrict-interface-responders">
+  <link href="/favicon.ico" rel="icon">
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="code" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-28653731-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="no-sidebar"  >
+  <header role="banner"><hgroup>
+  <h1>code</h1>
+  
+    <h2><a href="/">run{}</a></h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:vladimir-vg.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Как ограничить набор типов реализующих интерфейс в Go?</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-22T00:01:00+03:00" pubdate data-updated="true">Jan 22<span>nd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Когда есть свободное время я разбираюсь с языком Go, пытаюсь разобраться с его
+внутренностями, пытаюсь писать какие-то проекты с его помощью.</p>
+
+<p>В Go вводится ряд новшеств, которых нет в других хорошо развитых и популярных
+языках. Соответственно, код на Go не похож на код на Java или C++, слишком уж
+разный набор фич, совсем другие средства выражения.</p>
+
+<p>Наткнулся на прикольный способ искусственно ограничить список типов
+удовлетворяющих интерфейсу.</p>
+
+<h1 id="section">Ограничение набора типов реализующих конкретный интерфейс</h1>
+
+<p>К примеру если хочется использовать в своей <code>FooFunc</code> функции параметр <code>a</code>,
+так, чтобы a мог быть разных типов, но при этом нет одного интерфейса их объединяющего,
+с помощью которого можно было бы абстрагироваться.
+В таких случаях используют тип <code>interface{}</code></p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="keyword">func</span> FooFunc(a <span class="keyword">interface</span>{}) {
+    <span class="comment">// do what ever you want</span>
+}
+</pre></div>
+</div>
+</div>
+
+<p>Но так как как функция публичная, видимая извне, то может оказаться так,
+что в качестве <code>a</code> передадут не то значение что ожидает ваш код.</p>
+
+<p>Как раз на этот случай есть следующий трюк, можно объявить специальный интерфейс,
+который требует реализации лишь одного приватного метода-заглушки. Далее можно
+объявить методы для типов которые хочется использовать, тогда тип <code>a</code> будет
+проверяться на стадии компиляции.</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="keyword">type</span> aTypeInterface <span class="keyword">interface</span> {
+    aMethod()
+}
+
+<span class="keyword">func</span> FooFunc(a aTypeInterface) {
+    <span class="comment">// do what ever you want</span>
+}
+
+<span class="keyword">func</span> (bType) aMethod(){}
+<span class="keyword">func</span> (cType) aMethod(){}
+<span class="keyword">func</span> (dType) aMethod(){}
+</pre></div>
+</div>
+</div>
+
+<p>Теперь параметр <code>a</code> в функции <code>FooFunc</code> может быть лишь одним из указанных
+типов: <code>bType</code>, <code>cType</code>, <code>dType</code>, и это проверяется на стадии компиляции.</p>
+
+<p>Наткнулся на такой код в пакете стандартной библиотеки <code>go/ast/ast.go</code>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="comment">/* ... skipped ... */</span>
+
+<span class="comment">// All node types implement the Node interface.</span>
+<span class="keyword">type</span> Node <span class="keyword">interface</span> {
+    Pos() token.Pos <span class="comment">// position of first character belonging to the node</span>
+    End() token.Pos <span class="comment">// position of first character immediately after the node</span>
+}
+
+<span class="comment">// All statement nodes implement the Stmt interface.</span>
+<span class="keyword">type</span> Stmt <span class="keyword">interface</span> {
+    Node
+    stmtNode()
+}
+
+<span class="comment">/* ... skipped ... */</span>
+
+<span class="comment">// stmtNode() ensures that only statement nodes can be</span>
+<span class="comment">// assigned to a StmtNode.</span>
+<span class="comment">//</span>
+<span class="keyword">func</span> (*BadStmt) stmtNode()        {}
+<span class="keyword">func</span> (*DeclStmt) stmtNode()       {}
+<span class="keyword">func</span> (*EmptyStmt) stmtNode()      {}
+<span class="keyword">func</span> (*LabeledStmt) stmtNode()    {}
+<span class="keyword">func</span> (*ExprStmt) stmtNode()       {}
+<span class="keyword">func</span> (*SendStmt) stmtNode()       {}
+<span class="keyword">func</span> (*IncDecStmt) stmtNode()     {}
+<span class="keyword">func</span> (*AssignStmt) stmtNode()     {}
+<span class="keyword">func</span> (*GoStmt) stmtNode()         {}
+<span class="keyword">func</span> (*DeferStmt) stmtNode()      {}
+<span class="keyword">func</span> (*ReturnStmt) stmtNode()     {}
+<span class="keyword">func</span> (*BranchStmt) stmtNode()     {}
+<span class="keyword">func</span> (*BlockStmt) stmtNode()      {}
+<span class="keyword">func</span> (*IfStmt) stmtNode()         {}
+<span class="keyword">func</span> (*CaseClause) stmtNode()     {}
+<span class="keyword">func</span> (*SwitchStmt) stmtNode()     {}
+<span class="keyword">func</span> (*TypeSwitchStmt) stmtNode() {}
+<span class="keyword">func</span> (*CommClause) stmtNode()     {}
+<span class="keyword">func</span> (*SelectStmt) stmtNode()     {}
+<span class="keyword">func</span> (*ForStmt) stmtNode()        {}
+<span class="keyword">func</span> (*RangeStmt) stmtNode()      {}
+</pre></div>
+</div>
+</div>
+
+<p>Пример именно такого подхода</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/about" title="About the author (Gordeev Vladimir)" rel="author">Gordeev Vladimir</a></span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-22T00:01:00+03:00" pubdate data-updated="true">Jan 22<span>nd</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/go/'>go</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://vladimir-vg.github.io/blog/2013/01/22/restrict-interface-responders/" data-via="" data-counturl="http://vladimir-vg.github.io/blog/2013/01/22/restrict-interface-responders/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/12/18/does-c-always-better-than-cpp/" title="Previous Post: Есть ли случаи, когда Си лучше C++?">&laquo; Есть ли случаи, когда Си лучше C++?</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/03/05/forkconf-oop-talk/" title="next Post: «Ненормальное ООП». Выступление на калининградской конфе ForkConf">«Ненормальное ООП». Выступление на калининградской конфе ForkConf &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Gordeev Vladimir -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'vladimir-vg-blog';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://vladimir-vg.github.io/blog/2013/01/22/restrict-interface-responders/';
+        var disqus_url = 'http://vladimir-vg.github.io/blog/2013/01/22/restrict-interface-responders/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

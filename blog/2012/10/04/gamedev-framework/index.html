@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Повторное использование кода в gamedev. Возможно? - code</title>
+  <meta name="author" content="Gordeev Vladimir">
+
+  
+  <meta name="description" content="Ещё совсем недавно веб был совсем другой: скрипты хостились на shared-хостингах
+где набор доступных библиотек жёстко фиксировался хостером, и везде &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://vladimir-vg.github.io/blog/2012/10/04/gamedev-framework">
+  <link href="/favicon.ico" rel="icon">
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="code" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-28653731-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="no-sidebar"  >
+  <header role="banner"><hgroup>
+  <h1>code</h1>
+  
+    <h2><a href="/">run{}</a></h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:vladimir-vg.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Повторное использование кода в gamedev. Возможно?</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-04T14:56:00+03:00" pubdate data-updated="true">Oct 4<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Ещё совсем недавно веб был совсем другой: скрипты хостились на shared-хостингах
+где набор доступных библиотек жёстко фиксировался хостером, и везде правил <a href="http://en.wikipedia.org/wiki/PHP">PHP</a>.</p>
+
+<p>Огромный зоопарк фреймворков, несовместимых библиотек, некоторые из которых
+требовали специальных опций в <code>php.ini</code> для своей работы, некоторые работали
+только под определёнными версиями PHP. В общем прелесть.</p>
+
+<p>С появлением «ООП» в PHP стало лучше, жить стало веселее, люди стали создавать фреймворки
+соревнуясь с джавистами в обобщённости и абстрактности. В итоге всё это было
+похоже на огромную несовместимую кучу говна.</p>
+
+<p>Потом что-то изменилось. Возможно потому что VPS вошли в моду и стали
+повсеместно доступны, может ещё что-то. Так или иначе <a href="http://rubyonrails.org/">Ruby on Rails</a> стал
+набирать популярность.</p>
+
+<p>Думаю никто не станет спорить, что сегодня RoR является наиболее комфортной
+платформой для веб-разработки:</p>
+
+<ul>
+  <li>Строгое разделение кода по функциональности. <a href="http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller">MVC</a> во все поля.</li>
+  <li>Тесты, тесты, тесты. Множество фреймворков для тестирования,
+сложившаяся культура в сообществе.</li>
+  <li>Гибкое управление пакетами (rubygems &amp; bundler), использование специальных
+версий библиотек не доставляет боли.</li>
+  <li>Огромное количество библиотек, в первую очередь для вебаю</li>
+</ul>
+
+<p>И уже не важно тормозит Ruby или нет (по последним бенчмаркам он сравнялся с Python).
+Этот недостаток перевешивают преимущества, так необходимые для реальной разработки.</p>
+
+<p>Конечно Rails не панацея, он может не подходить для некоторых проектов, однако
+большую часть веб-проектов быстрее и легче писать на Rails.</p>
+
+<p>Таким образом, на мой взгляд, неупорядоченный и несовместимый веб стал упорядоченным.
+Взросла определённая культура среди разработчиков.</p>
+
+<h1 id="gamedev">А теперь взглянем на gamedev</h1>
+
+<p>Там сложилась очень похожая ситуация что и недавно в вебе.</p>
+
+<!--more-->
+
+<p>Игры принято писать на С++. Это мультипарадигменный язык, на нём можно писать
+в различных стилях: можно использовать дикую шаблонную магию в стиле <a href="http://www.boost.org/">boost</a>,
+можно с любовью городить монструозную иерархию классов, как привыкли джависты,
+можно вообще писать в сишном стиле, только структуры и функции, только хардкор.</p>
+
+<p>Открывая любой проект написанный на C++ вы не можете знать наверняка
+с чем вам придётся столкнуться.</p>
+
+<p><a href="http://en.wikipedia.org/wiki/C%2B%2B11">Новый стандарт C++</a> подливает масла в огонь,
+и если вы ещё не познакомились с новвоведениями,
+то чей-нибудь код может надолго вогнать вас в ступор.</p>
+
+<p>Один мой приятель рассказывал как работая над одним проектом неожиданно
+обнаружил что он требует патченую версию библиотеки, отличную
+от той что лежит в официальном репозитории. Обнаружилось это только
+когда приложение спустя некоторое время стало валиться.</p>
+
+<p>В Rails мире такая проблема решается просто: форк проекта с наложением патча
+и инструкция в <code>Gemfile</code> с требованием использовать код из нашего репозитория.
+Всё.</p>
+
+<p>В мире C++ такая информация передаётся из уст в уста, или в файликах README,
+как в старые добрые времена. Плохо когда нет автоматического управления зависимостями.
+Очень плохо.</p>
+
+<p>Культура тоже сложилась не ахти какая. Тестировать код (автоматическими тестами)
+– скорее исключение чем правило. Зато повсюду принято писать
+микрооптимизации, некоторые умудряются вставлять куски кода на асме,
+всё потому что “так быстрее работает”, разумеется не подкрепляя утверждения
+никакими бенчмарками.</p>
+
+<p>Очень похоже на ситуацию что я описывал выше. Разброд и шатание,
+блядство-разврат-наркотики.</p>
+
+<h1 id="section">И как сделать лучше?</h1>
+
+<p>Ясно что C++ здесь не подходит.
+Очевидно что это должен быть язык, реализация которого достаточно быстро
+оперирует с числами, но при этом без багажа C++. Язык достаточно гибкий
+для создания сложной, расширяемой архитектуры. 
+В идеале это должен быть язык работающий и под iOS и под Android.
+Правда не уверен возможно ли это.</p>
+
+<p>Мне нравится пророчить Go на это место.
+Перечитав строки выше понял что JavaScript вроде бы тоже подходит.</p>
+
+<p>Идём дальше. Нужно создать фреймворк на этом этом языке, где было бы строгое
+разбиение кода по функционалу, что-то подобное MVC.</p>
+
+<p><a href="http://en.wikipedia.org/wiki/Convention_over_configuration">Convention-over-configuration</a>
+это вторая вещь которой следует научиться у Rails,
+дерево исходных кодов должно быть фиксированным для всех проектов,
+чтобы любой разработчик знал где искать какие часть проекта, даже увидев его впервые.</p>
+
+<p>Если подумать, то похоже игровой код может лечь в MVC:</p>
+
+<ul>
+  <li>
+    <p>World/Models – здесь хранится весь мир, игровые объекты, их состояние и характеристики,
+игровые координаты. Для каждого world определён метод <code>process</code>, который обрабатывает
+действия в мире с течением времени. Частота обработки фиксируется при подлючении этого
+world. Также World должен отвечать за обработку физики.</p>
+
+    <p>Большая часть логики кода должна быть записана здесь.</p>
+  </li>
+  <li>
+    <p>View – код отвечающий за отрисовку конкретных объектов на экране. Список объектов
+необходимо запрашивать у world. Шейдерная магия также определяется здесь.
+У каждого из view должен быть метод <code>draw</code> который вызывается по таймеру.</p>
+  </li>
+  <li>
+    <p>Controller – набор обработчиков событий, как внутриигровых, так и устройств ввода,
+а также обработку пакетов из сети.</p>
+  </li>
+</ul>
+
+<p>К примеру если потребуется сделать игровой сервер, то он мог
+бы иметь несколько World-ов обрабатываемых одновременно, и не иметь никаких
+view (и вовсе не иметь видеокарты). Для сервера пришлось бы дописать несколько
+контроллеров работающих с сетью, но в целом, код тот же что и на клиенте.</p>
+
+<p>Итог: весь пост это моё имхо, я только пробую себя в gamdev,
+если где спорол херню – кидайте какашки в комментах.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/about" title="About the author (Gordeev Vladimir)" rel="author">Gordeev Vladimir</a></span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-04T14:56:00+03:00" pubdate data-updated="true">Oct 4<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/gamedev/'>gamedev</a>, <a class='category' href='/blog/categories/rails/'>rails</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://vladimir-vg.github.io/blog/2012/10/04/gamedev-framework/" data-via="" data-counturl="http://vladimir-vg.github.io/blog/2012/10/04/gamedev-framework/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/07/02/modern-browser-language/" title="Previous Post: Каким должен быть современный браузерный язык">&laquo; Каким должен быть современный браузерный язык</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/11/24/blog-updated/" title="next Post: Немного привёл блог в порядок">Немного привёл блог в порядок &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Gordeev Vladimir -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'vladimir-vg-blog';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://vladimir-vg.github.io/blog/2012/10/04/gamedev-framework/';
+        var disqus_url = 'http://vladimir-vg.github.io/blog/2012/10/04/gamedev-framework/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

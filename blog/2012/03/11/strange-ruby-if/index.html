@@ -1,0 +1,275 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Странное поведение выражения с if в Ruby - code</title>
+  <meta name="author" content="Gordeev Vladimir">
+
+  
+  <meta name="description" content="Первым делом код: class A def foo :method_value end def bar foo = :variable_value if false foo end
+end Если мы используем локальную переменную с &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://vladimir-vg.github.io/blog/2012/03/11/strange-ruby-if">
+  <link href="/favicon.ico" rel="icon">
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="code" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-28653731-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="no-sidebar"  >
+  <header role="banner"><hgroup>
+  <h1>code</h1>
+  
+    <h2><a href="/">run{}</a></h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:vladimir-vg.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Странное поведение выражения с if в Ruby</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-03-11T15:37:00+03:00" pubdate data-updated="true">Mar 11<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Первым делом код:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="keyword">class</span> <span class="class">A</span>
+  <span class="keyword">def</span> <span class="function">foo</span>
+    <span class="symbol">:method_value</span>
+  <span class="keyword">end</span>
+
+  <span class="keyword">def</span> <span class="function">bar</span>
+    foo = <span class="symbol">:variable_value</span> <span class="keyword">if</span> <span class="predefined-constant">false</span>
+    foo
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre></div>
+</div>
+</div>
+
+<p>Если мы используем локальную переменную с таким же именем как и метод, то
+метод перекрывается ею. В приведённом коде я ожидал возврата <code>:method_value</code>,
+т.к. мы не используем переменную <code>foo</code>. Метод <code>bar</code> возвращает <code>nil</code>.
+Забавно, правда?</p>
+
+<p>Переиначил приведённый выше пример, но получил тот же результат:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="keyword">class</span> <span class="class">A</span>
+  <span class="keyword">def</span> <span class="function">foo</span>
+    <span class="symbol">:method_value</span>
+  <span class="keyword">end</span>
+
+  <span class="keyword">def</span> <span class="function">bar</span>
+    <span class="keyword">if</span> <span class="predefined-constant">false</span>
+      foo = <span class="symbol">:variable_value</span>
+    <span class="keyword">end</span>
+    foo
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre></div>
+</div>
+</div>
+
+<p>Наверное эта «фича» находится в родственных связях с багом описанном в весёлом
+<a href="https://www.destroyallsoftware.com/talks/wat">WAT видео</a>:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>1.9.2p290 :001 &gt; a
+NameError: undefined local variable or method `a' for main:Object
+1.9.2p290 :002 &gt; b
+NameError: undefined local variable or method `b' for main:Object
+1.9.2p290 :003 &gt; a = b
+NameError: undefined local variable or method `b' for main:Object
+1.9.2p290 :004 &gt; a
+ =&gt; nil
+</pre></div>
+</div>
+</div>
+
+<p>После того как мы просто попытались использовать необъявленные переменные одна
+из них магическим образом объявилась.</p>
+
+<p>WAT?</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/about" title="About the author (Gordeev Vladimir)" rel="author">Gordeev Vladimir</a></span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-03-11T15:37:00+03:00" pubdate data-updated="true">Mar 11<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ruby/'>ruby</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://vladimir-vg.github.io/blog/2012/03/11/strange-ruby-if/" data-via="" data-counturl="http://vladimir-vg.github.io/blog/2012/03/11/strange-ruby-if/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/03/10/compare-funcs-in-go/" title="Previous Post: Сравнение функций в Go">&laquo; Сравнение функций в Go</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/03/14/test-runner-watcher-for-go/" title="next Post: Постоянный прогон тестов для Go">Постоянный прогон тестов для Go &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Gordeev Vladimir -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'vladimir-vg-blog';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://vladimir-vg.github.io/blog/2012/03/11/strange-ruby-if/';
+        var disqus_url = 'http://vladimir-vg.github.io/blog/2012/03/11/strange-ruby-if/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

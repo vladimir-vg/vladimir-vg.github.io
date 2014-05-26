@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: octopress | code]]></title>
+  <link href="http://vladimir-vg.github.io/blog/categories/octopress/atom.xml" rel="self"/>
+  <link href="http://vladimir-vg.github.io/"/>
+  <updated>2014-05-26T12:53:46+03:00</updated>
+  <id>http://vladimir-vg.github.io/</id>
+  <author>
+    <name><![CDATA[Gordeev Vladimir]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Немного привёл блог в порядок]]></title>
+    <link href="http://vladimir-vg.github.io/blog/2012/11/24/blog-updated/"/>
+    <updated>2012-11-24T16:26:00+03:00</updated>
+    <id>http://vladimir-vg.github.io/blog/2012/11/24/blog-updated</id>
+    <content type="html"><![CDATA[<p>Включил тему <a href="https://github.com/octopress-themes/blanket">blanket</a> для <a href="http://octopress.org/">octopress</a>, немного подтюнинговал. Немного поменял шрифты, прописал тащить с Google Web Fonts кириллицу, достаточно добавить параметр <code>&amp;subset=latin,cyrillic</code> в <code>/source/_includes/custom/head.html</code>.</p>
+
+<p>Таки добавил явную ссылку для комментирования, теперь не нужно быть вангой чтобы понять что посты можно комментить.</p>
+
+<p>Поменял в шрифт заголовка с <a href="http://www.google.com/webfonts/specimen/Lobster">Lobster</a> на <a href="http://www.google.com/webfonts/specimen/Marmelad">Marmelad</a>.</p>
+
+<p>Вообще, Octopress чертовски удобный инструмент для генерации статичного блога,
+очень легко настраивается под себя.</p>
+
+<p>Всё собирался написать про шаблонизатор <a href="https://github.com/vladimir-vg/elk.erl">Mustache для Erlang</a> который я написал ещё 4 месяца назад, да всё руки не доходили. Постараюсь запилить следующим постом.</p>
+]]></content>
+  </entry>
+  
+</feed>
