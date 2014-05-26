@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: blog | code]]></title>
-  <link href="http://vladimir-vg.github.io/blog/categories/blog/atom.xml" rel="self"/>
+  <title><![CDATA[Category: army | code]]></title>
+  <link href="http://vladimir-vg.github.io/blog/categories/army/atom.xml" rel="self"/>
   <link href="http://vladimir-vg.github.io/"/>
   <updated>2014-05-26T14:37:15+03:00</updated>
   <id>http://vladimir-vg.github.io/</id>
@@ -69,67 +69,6 @@
 что это восстановимо.</p>
 
 <p>PS: Полон сил, сверну горы.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Армия]]></title>
-    <link href="http://vladimir-vg.github.io/blog/2013/04/22/army/"/>
-    <updated>2013-04-22T13:48:00+03:00</updated>
-    <id>http://vladimir-vg.github.io/blog/2013/04/22/army</id>
-    <content type="html"><![CDATA[<p>Завтра, 23-го апреля в 6:00 утра я ухожу в армию на год. Соотвественно,
-я не смогу писать в блог, делать какие-то эксперименты в течение этого года.</p>
-
-<p>Надеюсь что я за этот год стану лучше.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Немного привёл блог в порядок]]></title>
-    <link href="http://vladimir-vg.github.io/blog/2012/11/24/blog-updated/"/>
-    <updated>2012-11-24T16:26:00+03:00</updated>
-    <id>http://vladimir-vg.github.io/blog/2012/11/24/blog-updated</id>
-    <content type="html"><![CDATA[<p>Включил тему <a href="https://github.com/octopress-themes/blanket">blanket</a> для <a href="http://octopress.org/">octopress</a>, немного подтюнинговал. Немного поменял шрифты, прописал тащить с Google Web Fonts кириллицу, достаточно добавить параметр <code>&amp;subset=latin,cyrillic</code> в <code>/source/_includes/custom/head.html</code>.</p>
-
-<p>Таки добавил явную ссылку для комментирования, теперь не нужно быть вангой чтобы понять что посты можно комментить.</p>
-
-<p>Поменял в шрифт заголовка с <a href="http://www.google.com/webfonts/specimen/Lobster">Lobster</a> на <a href="http://www.google.com/webfonts/specimen/Marmelad">Marmelad</a>.</p>
-
-<p>Вообще, Octopress чертовски удобный инструмент для генерации статичного блога,
-очень легко настраивается под себя.</p>
-
-<p>Всё собирался написать про шаблонизатор <a href="https://github.com/vladimir-vg/elk.erl">Mustache для Erlang</a> который я написал ещё 4 месяца назад, да всё руки не доходили. Постараюсь запилить следующим постом.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Всем привет! Снова.]]></title>
-    <link href="http://vladimir-vg.github.io/blog/2012/02/05/hello-there-again/"/>
-    <updated>2012-02-05T16:19:00+03:00</updated>
-    <id>http://vladimir-vg.github.io/blog/2012/02/05/hello-there-again</id>
-    <content type="html"><![CDATA[<p>Похоже что вести блог на английском для меня пока непосильная задача. Конечно
-я могу писать на английском, но текст непременно будет содержать ошибки.</p>
-
-<p>Также важна аудитория. В сети полно блогов на английском языке, смогу ли я
-поделиться чем-то ценным с англоязычной аудиторией? Это сделать труднее
-чем для русскоязычной.</p>
-
-<p>Кроме того, в сети полно статей, заслуживающих внимания, но доступных лишь на
-английском языке. Было бы доброй услугой перевести их.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[init]]></title>
-    <link href="http://vladimir-vg.github.io/blog/2012/01/26/init/"/>
-    <updated>2012-01-26T16:00:00+03:00</updated>
-    <id>http://vladimir-vg.github.io/blog/2012/01/26/init</id>
-    <content type="html"><![CDATA[<p>Hello there, this is my first post in this blog. Actually I wrote it mostly for
-testing purposes rather than to provide some kind of information.</p>
-
-<p>btw, English isn’t my native language, so probably my texts may contain
-grammatical mistakes. I will be glad to accept your pull-request with fixes.</p>
-
 ]]></content>
   </entry>
   
