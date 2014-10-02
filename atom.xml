@@ -4,7 +4,7 @@
   <title><![CDATA[Скука и рутина это зло]]></title>
   <link href="http://vladimir-vg.github.io/atom.xml" rel="self"/>
   <link href="http://vladimir-vg.github.io/"/>
-  <updated>2014-05-26T14:56:29+03:00</updated>
+  <updated>2014-10-02T14:00:54+04:00</updated>
   <id>http://vladimir-vg.github.io/</id>
   <author>
     <name><![CDATA[Gordeev Vladimir]]></name>
@@ -14,9 +14,50 @@
 
   
   <entry>
+    <title type="html"><![CDATA[В AngularJS должно быть больше структуры]]></title>
+    <link href="http://vladimir-vg.github.io/blog/2014/10/02/angularjs-is-structurized-not-enough/"/>
+    <updated>2014-10-02T13:33:14+04:00</updated>
+    <id>http://vladimir-vg.github.io/blog/2014/10/02/angularjs-is-structurized-not-enough</id>
+    <content type="html"><![CDATA[<p>Angular.js – каркас для создания сложной клиентской части, как правило SPA (Single Page Application).
+В этом каркасе есть несколько сущностей, вроде controllers, directives, services, factories, provides, filters.
+С их помощью можно разбить код на независимые части.</p>
+
+<p>Я освоил этот каркас довольно быстро – где-то около недели, и смотрю на него глазами опытного Rails-разработчика.
+И многое мне не нравится.</p>
+
+<p>Rails очень хорош своей навязываемой структурой приложения – любой новый разработчик пришедший в проект уже
+приблизительно знает где какой код искать, где что писать. Это и есть Convention over Configuration.</p>
+
+<p>В Angular есть необходимые абстракции, но нет convention. Правила именования директорий, файлов, сервисов это важно,
+но не это меня сейчас беспокоит. Есть множество вопросов на которые официальная документация ответов не даёт.</p>
+
+<h1 id="section">Где хранить состояние?</h1>
+
+<p>В Angular есть такая сущность как scope. Это пространство имён которым владеет controller либо directive,
+которое может иметь предков (parent scope). Именно через это проиходит two way binding, связь представления (view)
+и controller/directive.</p>
+
+<p>Кроме того, есть такая вещь как $rootScope, которая выступает в роли глобальной области видимости, доступной из всех
+views, controllers, directives, factories.</p>
+
+<p>Проблемы начинаются когда у вас появляется много разных controllers, direcrtives, которым нужно общаться между собой
+и обмениваться данными. Первая же мысль использовать для этого $rootScope, приносит боль, много боли.</p>
+
+<p>Вторая мысль – использовать service. Сервис – это набор методов, которые владеют общим состоянием.
+Однако это состояние не глобально, для каждого контроллера и директивы при использовании создаётся
+отдельный экземпляр сервиса.</p>
+
+<p>Я решил эту проблему с помощью пары событий между контроллерами. Первый контроллер запрашивает данные <code>second:get</code>,
+а второй отправляет <code>second:get:error</code> либо <code>second:get:success</code>. Очень не хватает каналов из Go.</p>
+
+<p>Есть ещё ряд проблем, для которых я пока не придумал грамотного решения.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Итоги службы]]></title>
     <link href="http://vladimir-vg.github.io/blog/2014/05/26/i-came-back/"/>
-    <updated>2014-05-26T13:34:19+03:00</updated>
+    <updated>2014-05-26T14:34:19+04:00</updated>
     <id>http://vladimir-vg.github.io/blog/2014/05/26/i-came-back</id>
     <content type="html"><![CDATA[<p>Обычно программисты в армии не служат. А я вот сходил.</p>
 
@@ -75,7 +116,7 @@
   <entry>
     <title type="html"><![CDATA[Армия]]></title>
     <link href="http://vladimir-vg.github.io/blog/2013/04/22/army/"/>
-    <updated>2013-04-22T13:48:00+03:00</updated>
+    <updated>2013-04-22T13:48:00+04:00</updated>
     <id>http://vladimir-vg.github.io/blog/2013/04/22/army</id>
     <content type="html"><![CDATA[<p>Завтра, 23-го апреля в 6:00 утра я ухожу в армию на год. Соотвественно,
 я не смогу писать в блог, делать какие-то эксперименты в течение этого года.</p>
@@ -87,7 +128,7 @@
   <entry>
     <title type="html"><![CDATA[«Ненормальное ООП». Выступление на калининградской конфе ForkConf]]></title>
     <link href="http://vladimir-vg.github.io/blog/2013/03/05/forkconf-oop-talk/"/>
-    <updated>2013-03-05T19:07:00+03:00</updated>
+    <updated>2013-03-05T19:07:00+04:00</updated>
     <id>http://vladimir-vg.github.io/blog/2013/03/05/forkconf-oop-talk</id>
     <content type="html"><![CDATA[<p>3 марта, два дня назад мне довелось выступать на местной калининградской
 IT-конференции под названием <a href="http://www.forkconf.ru/">ForkConf</a>.
@@ -123,7 +164,7 @@ Ruby, то и код на слайдах почти весь на Ruby.</p>
   <entry>
     <title type="html"><![CDATA[Как ограничить набор типов реализующих интерфейс в Go?]]></title>
     <link href="http://vladimir-vg.github.io/blog/2013/01/22/restrict-interface-responders/"/>
-    <updated>2013-01-22T00:01:00+03:00</updated>
+    <updated>2013-01-22T00:01:00+04:00</updated>
     <id>http://vladimir-vg.github.io/blog/2013/01/22/restrict-interface-responders</id>
     <content type="html"><![CDATA[<p>Когда есть свободное время я разбираюсь с языком Go, пытаюсь разобраться с его
 внутренностями, пытаюсь писать какие-то проекты с его помощью.</p>
@@ -231,7 +272,7 @@ Ruby, то и код на слайдах почти весь на Ruby.</p>
   <entry>
     <title type="html"><![CDATA[Есть ли случаи, когда Си лучше C++?]]></title>
     <link href="http://vladimir-vg.github.io/blog/2012/12/18/does-c-always-better-than-cpp/"/>
-    <updated>2012-12-18T10:43:00+03:00</updated>
+    <updated>2012-12-18T10:43:00+04:00</updated>
     <id>http://vladimir-vg.github.io/blog/2012/12/18/does-c-always-better-than-cpp</id>
     <content type="html"><![CDATA[<p>Вопрос с <a href="http://hashcode.ru/questions/174571/">таким заголовком запостил один парень на хэшкоде</a>.</p>
 
@@ -297,7 +338,7 @@ Ruby, то и код на слайдах почти весь на Ruby.</p>
   <entry>
     <title type="html"><![CDATA[Немного привёл блог в порядок]]></title>
     <link href="http://vladimir-vg.github.io/blog/2012/11/24/blog-updated/"/>
-    <updated>2012-11-24T16:26:00+03:00</updated>
+    <updated>2012-11-24T16:26:00+04:00</updated>
     <id>http://vladimir-vg.github.io/blog/2012/11/24/blog-updated</id>
     <content type="html"><![CDATA[<p>Включил тему <a href="https://github.com/octopress-themes/blanket">blanket</a> для <a href="http://octopress.org/">octopress</a>, немного подтюнинговал. Немного поменял шрифты, прописал тащить с Google Web Fonts кириллицу, достаточно добавить параметр <code>&amp;subset=latin,cyrillic</code> в <code>/source/_includes/custom/head.html</code>.</p>
 
@@ -315,7 +356,7 @@ Ruby, то и код на слайдах почти весь на Ruby.</p>
   <entry>
     <title type="html"><![CDATA[Повторное использование кода в gamedev. Возможно?]]></title>
     <link href="http://vladimir-vg.github.io/blog/2012/10/04/gamedev-framework/"/>
-    <updated>2012-10-04T14:56:00+03:00</updated>
+    <updated>2012-10-04T14:56:00+04:00</updated>
     <id>http://vladimir-vg.github.io/blog/2012/10/04/gamedev-framework</id>
     <content type="html"><![CDATA[<p>Ещё совсем недавно веб был совсем другой: скрипты хостились на shared-хостингах
 где набор доступных библиотек жёстко фиксировался хостером, и везде правил <a href="http://en.wikipedia.org/wiki/PHP">PHP</a>.</p>
@@ -448,7 +489,7 @@ view (и вовсе не иметь видеокарты). Для сервера
   <entry>
     <title type="html"><![CDATA[Каким должен быть современный браузерный язык]]></title>
     <link href="http://vladimir-vg.github.io/blog/2012/07/02/modern-browser-language/"/>
-    <updated>2012-07-02T21:38:00+03:00</updated>
+    <updated>2012-07-02T21:38:00+04:00</updated>
     <id>http://vladimir-vg.github.io/blog/2012/07/02/modern-browser-language</id>
     <content type="html"><![CDATA[<h2 id="javascript">Или что меня не устраивает в JavaScript</h2>
 
@@ -515,7 +556,7 @@ view (и вовсе не иметь видеокарты). Для сервера
   <entry>
     <title type="html"><![CDATA[Mustache, шаблонизатор лишённый логики]]></title>
     <link href="http://vladimir-vg.github.io/blog/2012/05/29/mustache-overview/"/>
-    <updated>2012-05-29T12:53:00+03:00</updated>
+    <updated>2012-05-29T12:53:00+04:00</updated>
     <id>http://vladimir-vg.github.io/blog/2012/05/29/mustache-overview</id>
     <content type="html"><![CDATA[<p>Наверное вы уже видели <a href="http://mustache.github.com/">Mustache</a>?
 Это удобный шаблонизатор, имеющий множество реализаций для различных платформ
@@ -707,7 +748,7 @@ mustache на Erlang. (Рабочая версия будет объявлена
   <entry>
     <title type="html"><![CDATA[ActiveRecord Store в Rails 3.2]]></title>
     <link href="http://vladimir-vg.github.io/blog/2012/05/24/activerecord-3.2-store/"/>
-    <updated>2012-05-24T09:21:00+03:00</updated>
+    <updated>2012-05-24T09:21:00+04:00</updated>
     <id>http://vladimir-vg.github.io/blog/2012/05/24/activerecord-3.2-store</id>
     <content type="html"><![CDATA[<p>Недавно довелось пользоваться <code>store</code>-атрибутами которые появились в последних
 рельсах. На самом деле <code>store</code>-атрибуты довольно простая вещь: это поле в
@@ -784,7 +825,7 @@ mustache на Erlang. (Рабочая версия будет объявлена
   <entry>
     <title type="html"><![CDATA[Пять правил Роба Пайка]]></title>
     <link href="http://vladimir-vg.github.io/blog/2012/04/02/five-rules/"/>
-    <updated>2012-04-02T17:17:00+03:00</updated>
+    <updated>2012-04-02T17:17:00+04:00</updated>
     <id>http://vladimir-vg.github.io/blog/2012/04/02/five-rules</id>
     <content type="html"><![CDATA[<p>Наткнулся на <a href="http://users.ece.utexas.edu/~adnan/pike.html">пять правил программирования</a>,
 написанных Робом Пайком:</p>
@@ -844,7 +885,7 @@ mustache на Erlang. (Рабочая версия будет объявлена
   <entry>
     <title type="html"><![CDATA[rename watcher -> go-retest]]></title>
     <link href="http://vladimir-vg.github.io/blog/2012/03/17/go-retest-repository/"/>
-    <updated>2012-03-17T16:46:00+03:00</updated>
+    <updated>2012-03-17T16:46:00+04:00</updated>
     <id>http://vladimir-vg.github.io/blog/2012/03/17/go-retest-repository</id>
     <content type="html"><![CDATA[<p>Небольшой watcher описанный <a href="http://vladimir-vg.github.io/blog/2012/03/14/test-runner-watcher-for-go/">в предыдущем посте</a>
 теперь называется <code>go-retest</code>, вызывается одноимённой командой и живёт по
@@ -861,7 +902,7 @@ mustache на Erlang. (Рабочая версия будет объявлена
   <entry>
     <title type="html"><![CDATA[Постоянный прогон тестов для Go]]></title>
     <link href="http://vladimir-vg.github.io/blog/2012/03/14/test-runner-watcher-for-go/"/>
-    <updated>2012-03-14T01:20:00+03:00</updated>
+    <updated>2012-03-14T01:20:00+04:00</updated>
     <id>http://vladimir-vg.github.io/blog/2012/03/14/test-runner-watcher-for-go</id>
     <content type="html"><![CDATA[<p>Понадобилась мне небольшая тулза, которая бы перезапускала тесты при изменениях
 кода, а также уведомляла об ошибках. Проще говоря мне нужено что-то вроде
@@ -954,7 +995,7 @@ mustache на Erlang. (Рабочая версия будет объявлена
   <entry>
     <title type="html"><![CDATA[Странное поведение выражения с if в Ruby]]></title>
     <link href="http://vladimir-vg.github.io/blog/2012/03/11/strange-ruby-if/"/>
-    <updated>2012-03-11T15:37:00+03:00</updated>
+    <updated>2012-03-11T15:37:00+04:00</updated>
     <id>http://vladimir-vg.github.io/blog/2012/03/11/strange-ruby-if</id>
     <content type="html"><![CDATA[<p>Первым делом код:</p>
 
@@ -1023,7 +1064,7 @@ NameError: undefined local variable or method `b' for main:Object
   <entry>
     <title type="html"><![CDATA[Сравнение функций в Go]]></title>
     <link href="http://vladimir-vg.github.io/blog/2012/03/10/compare-funcs-in-go/"/>
-    <updated>2012-03-10T11:26:00+03:00</updated>
+    <updated>2012-03-10T11:26:00+04:00</updated>
     <id>http://vladimir-vg.github.io/blog/2012/03/10/compare-funcs-in-go</id>
     <content type="html"><![CDATA[<p>Мне всегда казалось естественным сравнивать функции в языках с поддержкой
 ФВП. Понятное дело, что сравнить ведут ли себя функции одинаково, в одинаковый
@@ -1078,7 +1119,7 @@ NameError: undefined local variable or method `b' for main:Object
   <entry>
     <title type="html"><![CDATA[Всем привет! Снова.]]></title>
     <link href="http://vladimir-vg.github.io/blog/2012/02/05/hello-there-again/"/>
-    <updated>2012-02-05T16:19:00+03:00</updated>
+    <updated>2012-02-05T16:19:00+04:00</updated>
     <id>http://vladimir-vg.github.io/blog/2012/02/05/hello-there-again</id>
     <content type="html"><![CDATA[<p>Похоже что вести блог на английском для меня пока непосильная задача. Конечно
 я могу писать на английском, но текст непременно будет содержать ошибки.</p>
@@ -1095,7 +1136,7 @@ NameError: undefined local variable or method `b' for main:Object
   <entry>
     <title type="html"><![CDATA[init]]></title>
     <link href="http://vladimir-vg.github.io/blog/2012/01/26/init/"/>
-    <updated>2012-01-26T16:00:00+03:00</updated>
+    <updated>2012-01-26T16:00:00+04:00</updated>
     <id>http://vladimir-vg.github.io/blog/2012/01/26/init</id>
     <content type="html"><![CDATA[<p>Hello there, this is my first post in this blog. Actually I wrote it mostly for
 testing purposes rather than to provide some kind of information.</p>

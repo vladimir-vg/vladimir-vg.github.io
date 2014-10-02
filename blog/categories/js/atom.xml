@@ -4,7 +4,7 @@
   <title><![CDATA[Category: js | Скука и рутина это зло]]></title>
   <link href="http://vladimir-vg.github.io/blog/categories/js/atom.xml" rel="self"/>
   <link href="http://vladimir-vg.github.io/"/>
-  <updated>2014-05-26T14:56:29+03:00</updated>
+  <updated>2014-10-02T14:00:54+04:00</updated>
   <id>http://vladimir-vg.github.io/</id>
   <author>
     <name><![CDATA[Gordeev Vladimir]]></name>
@@ -14,9 +14,50 @@
 
   
   <entry>
+    <title type="html"><![CDATA[В AngularJS должно быть больше структуры]]></title>
+    <link href="http://vladimir-vg.github.io/blog/2014/10/02/angularjs-is-structurized-not-enough/"/>
+    <updated>2014-10-02T13:33:14+04:00</updated>
+    <id>http://vladimir-vg.github.io/blog/2014/10/02/angularjs-is-structurized-not-enough</id>
+    <content type="html"><![CDATA[<p>Angular.js – каркас для создания сложной клиентской части, как правило SPA (Single Page Application).
+В этом каркасе есть несколько сущностей, вроде controllers, directives, services, factories, provides, filters.
+С их помощью можно разбить код на независимые части.</p>
+
+<p>Я освоил этот каркас довольно быстро – где-то около недели, и смотрю на него глазами опытного Rails-разработчика.
+И многое мне не нравится.</p>
+
+<p>Rails очень хорош своей навязываемой структурой приложения – любой новый разработчик пришедший в проект уже
+приблизительно знает где какой код искать, где что писать. Это и есть Convention over Configuration.</p>
+
+<p>В Angular есть необходимые абстракции, но нет convention. Правила именования директорий, файлов, сервисов это важно,
+но не это меня сейчас беспокоит. Есть множество вопросов на которые официальная документация ответов не даёт.</p>
+
+<h1 id="section">Где хранить состояние?</h1>
+
+<p>В Angular есть такая сущность как scope. Это пространство имён которым владеет controller либо directive,
+которое может иметь предков (parent scope). Именно через это проиходит two way binding, связь представления (view)
+и controller/directive.</p>
+
+<p>Кроме того, есть такая вещь как $rootScope, которая выступает в роли глобальной области видимости, доступной из всех
+views, controllers, directives, factories.</p>
+
+<p>Проблемы начинаются когда у вас появляется много разных controllers, direcrtives, которым нужно общаться между собой
+и обмениваться данными. Первая же мысль использовать для этого $rootScope, приносит боль, много боли.</p>
+
+<p>Вторая мысль – использовать service. Сервис – это набор методов, которые владеют общим состоянием.
+Однако это состояние не глобально, для каждого контроллера и директивы при использовании создаётся
+отдельный экземпляр сервиса.</p>
+
+<p>Я решил эту проблему с помощью пары событий между контроллерами. Первый контроллер запрашивает данные <code>second:get</code>,
+а второй отправляет <code>second:get:error</code> либо <code>second:get:success</code>. Очень не хватает каналов из Go.</p>
+
+<p>Есть ещё ряд проблем, для которых я пока не придумал грамотного решения.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Каким должен быть современный браузерный язык]]></title>
     <link href="http://vladimir-vg.github.io/blog/2012/07/02/modern-browser-language/"/>
-    <updated>2012-07-02T21:38:00+03:00</updated>
+    <updated>2012-07-02T21:38:00+04:00</updated>
     <id>http://vladimir-vg.github.io/blog/2012/07/02/modern-browser-language</id>
     <content type="html"><![CDATA[<h2 id="javascript">Или что меня не устраивает в JavaScript</h2>
 

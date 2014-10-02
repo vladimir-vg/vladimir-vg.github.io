@@ -4,7 +4,7 @@
   <title><![CDATA[Category: gamedev | Скука и рутина это зло]]></title>
   <link href="http://vladimir-vg.github.io/blog/categories/gamedev/atom.xml" rel="self"/>
   <link href="http://vladimir-vg.github.io/"/>
-  <updated>2014-05-26T14:56:29+03:00</updated>
+  <updated>2014-10-02T14:00:54+04:00</updated>
   <id>http://vladimir-vg.github.io/</id>
   <author>
     <name><![CDATA[Gordeev Vladimir]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Повторное использование кода в gamedev. Возможно?]]></title>
     <link href="http://vladimir-vg.github.io/blog/2012/10/04/gamedev-framework/"/>
-    <updated>2012-10-04T14:56:00+03:00</updated>
+    <updated>2012-10-04T14:56:00+04:00</updated>
     <id>http://vladimir-vg.github.io/blog/2012/10/04/gamedev-framework</id>
     <content type="html"><![CDATA[<p>Ещё совсем недавно веб был совсем другой: скрипты хостились на shared-хостингах
 где набор доступных библиотек жёстко фиксировался хостером, и везде правил <a href="http://en.wikipedia.org/wiki/PHP">PHP</a>.</p>
