@@ -4,7 +4,7 @@
   <title><![CDATA[Category: go | Скука и рутина это зло]]></title>
   <link href="http://vladimir-vg.github.io/blog/categories/go/atom.xml" rel="self"/>
   <link href="http://vladimir-vg.github.io/"/>
-  <updated>2014-10-02T14:00:54+04:00</updated>
+  <updated>2014-10-20T21:26:18+03:00</updated>
   <id>http://vladimir-vg.github.io/</id>
   <author>
     <name><![CDATA[Gordeev Vladimir]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Как ограничить набор типов реализующих интерфейс в Go?]]></title>
     <link href="http://vladimir-vg.github.io/blog/2013/01/22/restrict-interface-responders/"/>
-    <updated>2013-01-22T00:01:00+04:00</updated>
+    <updated>2013-01-22T00:01:00+03:00</updated>
     <id>http://vladimir-vg.github.io/blog/2013/01/22/restrict-interface-responders</id>
     <content type="html"><![CDATA[<p>Когда есть свободное время я разбираюсь с языком Go, пытаюсь разобраться с его
 внутренностями, пытаюсь писать какие-то проекты с его помощью.</p>
@@ -124,7 +124,7 @@
   <entry>
     <title type="html"><![CDATA[rename watcher -> go-retest]]></title>
     <link href="http://vladimir-vg.github.io/blog/2012/03/17/go-retest-repository/"/>
-    <updated>2012-03-17T16:46:00+04:00</updated>
+    <updated>2012-03-17T16:46:00+03:00</updated>
     <id>http://vladimir-vg.github.io/blog/2012/03/17/go-retest-repository</id>
     <content type="html"><![CDATA[<p>Небольшой watcher описанный <a href="/blog/2012/03/14/test-runner-watcher-for-go/">в предыдущем посте</a>
 теперь называется <code>go-retest</code>, вызывается одноимённой командой и живёт по
@@ -141,7 +141,7 @@
   <entry>
     <title type="html"><![CDATA[Постоянный прогон тестов для Go]]></title>
     <link href="http://vladimir-vg.github.io/blog/2012/03/14/test-runner-watcher-for-go/"/>
-    <updated>2012-03-14T01:20:00+04:00</updated>
+    <updated>2012-03-14T01:20:00+03:00</updated>
     <id>http://vladimir-vg.github.io/blog/2012/03/14/test-runner-watcher-for-go</id>
     <content type="html"><![CDATA[<p>Понадобилась мне небольшая тулза, которая бы перезапускала тесты при изменениях
 кода, а также уведомляла об ошибках. Проще говоря мне нужено что-то вроде
@@ -234,7 +234,7 @@
   <entry>
     <title type="html"><![CDATA[Сравнение функций в Go]]></title>
     <link href="http://vladimir-vg.github.io/blog/2012/03/10/compare-funcs-in-go/"/>
-    <updated>2012-03-10T11:26:00+04:00</updated>
+    <updated>2012-03-10T11:26:00+03:00</updated>
     <id>http://vladimir-vg.github.io/blog/2012/03/10/compare-funcs-in-go</id>
     <content type="html"><![CDATA[<p>Мне всегда казалось естественным сравнивать функции в языках с поддержкой
 ФВП. Понятное дело, что сравнить ведут ли себя функции одинаково, в одинаковый

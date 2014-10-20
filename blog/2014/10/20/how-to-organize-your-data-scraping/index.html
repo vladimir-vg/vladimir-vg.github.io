@@ -1,0 +1,533 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Как организовать «парсинг» внешних ресурсов при помощи DSL - Скука и рутина это зло</title>
+  <meta name="author" content="Gordeev Vladimir">
+
+  
+  <meta name="description" content="Помимо основной работы, я занимаюсь своим небольшим побочным проектом, в основном на
+выходных. И есть особенность что отличает такие проекты – ты &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://vladimir-vg.github.io/blog/2014/10/20/how-to-organize-your-data-scraping">
+  <link href="/favicon.ico" rel="icon">
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Скука и рутина это зло" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-28653731-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="no-sidebar"  >
+  <header role="banner"><hgroup>
+  <h1>Скука и рутина это зло</h1>
+  
+    <h2><a href="/">run{}</a></h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:vladimir-vg.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Как организовать «парсинг» внешних ресурсов при помощи DSL</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-10-20T18:01:50+03:00" pubdate data-updated="true">Oct 20<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Помимо основной работы, я занимаюсь своим небольшим побочным проектом, в основном на
+выходных. И есть особенность что отличает такие проекты – ты можешь уделять
+задачам столько времени, сколько посчитаешь нужным. На работе это не так.</p>
+
+<p>В рабочее время у тебя есть дедлайн, нужно предоставить фичу
+реализованной в какой-то срок. И это даже хорошо, это организует. Но это плохо,
+если фича которую реализуешь задаёт архитектуру для проекта, и в последствии
+будет неоднократно изменяться и расширяться. Архитектуру лучше сразу делать
+хорошей, ибо рефакторинг будет очень болезненный.</p>
+
+<p>Одна из составных частей моего проекта – чтение и распознавание текста
+с внешних ресурсов (сайтов, проще говоря).</p>
+
+<p>Переписав три раза код, наконец получил то что мне нравится.
+В этом посте вкратце расскажу как я это вижу.</p>
+
+<h2 id="section">Задача</h2>
+
+<p>Итак, мои требования таковы:</p>
+
+<ol>
+  <li>
+    <p>Чтение с внешних ресурсов. Оно может происходить по-разному, в разных
+форматах и протоколах. Может оказаться так, что данные будут предоставляться
+после авторизации, через протокол <code>https</code> или вообще в виде локально доступного
+файла. (Это может быть .xls к примеру) Надо предусмотреть возможность
+добавления новых источников.</p>
+  </li>
+  <li>
+    <p>Сайты с которых происходит считывание могут иметь самую разную структуру.
+Иногда информация о конкретном предмете (товар, в моём случае) может быть
+размазана по нескольким страницам.</p>
+  </li>
+  <li>
+    <p>Удобное масштабирование. Число источников может вырасти очень стремительно.
+Нужно уметь раскидывать задачи и данные на несколько серверов.</p>
+  </li>
+  <li>
+    <p>Обработка ошибок. Ресурс источник может внезапно поменять структуру DOM,
+нужно адекватно на это реагировать.  Кроме того, мне не хотелось бы, чтобы
+весь процесс синхронизации валился из-за одной страницы, на которой формат
+оказался немного другим от ожидаемого.</p>
+  </li>
+  <li>
+    <p>Возможность производить обработку на разных платформах. К примеру, я так и не
+нашёл подходящего гема для работы с русской морфологией, а вот для python
+есть подходящий пакет. Хочу иметь возможность загрузить страницу на Ruby,
+а разбить и распознать – на Python.</p>
+  </li>
+  <li>
+    <p>Версионирование загруженных данных. На тот случай, что если в распознающем
+коде закралась ошибка – быстро и безболезненно откатить на старую версию.</p>
+  </li>
+</ol>
+
+<h2 id="section-1">Идея</h2>
+
+<p>Для того чтобы удовлетворить 2-й и 3-й пункт необходимо загрузку разбить на
+отдельные независимые части. Напрашивается создание нескольких воркеров, каждый
+для какого-то конкретного куска, например:</p>
+
+<!--more-->
+
+<ul>
+  <li>Воркер1: Получение списка категорий, добавление их в очередь.</li>
+  <li>Воркер2: Получение списка страниц, добавление их в очередь.</li>
+  <li>Воркер3: Получение списка товаров с конкретной страницы, добавление их в очередь.</li>
+  <li>Воркер4: Чтение информации о конкретном товаре.</li>
+</ul>
+
+<p>Нужен менеджер очередей, вроде DelayedJob (ныне порицаем), Sidekiq.
+Я выбрал RabbitMQ для работы с очередями. Понравился своими бенчмарками, гибкостью
+и Erlang’ом.</p>
+
+<p>Итак, воркер получает аргументы для выполнения из сообщения (из очереди RabbitMQ),
+выполняет обработку, и забрасывает обратно в другие очереди другие куски для
+обработки.</p>
+
+<p>Для простоты в каждой задаче для воркера обрабатывается одна страница.</p>
+
+<p>Получаем что-то вроде рекурсивной функции, выполнение которой можно в любой момент
+остановить, починить, и снова продолжить. Ляпота =)</p>
+
+<p>Кроме того, достигается пункт 5. ВоркерN может быть написан на другой платформе,
+главное иметь клиент AMQP, для подкючения к message broker.</p>
+
+<h3 id="section-2">Версионирование и хранение результатов</h3>
+
+<p>Итак, мы каким-то образом получаем сырые (<code>raw</code>) данные с сайта, потом их
+распознаём, и как-то сохраняем как распознанные индексируемые поля (<code>fields</code>).</p>
+
+<p>Однако, если данные не изменились, то распознавание (первращение <code>raw</code> в <code>fields</code>)
+будет происходить всё равно. Это плохо. Кроме того, само распознавание может
+быть довольно тяжёлой операцией – кто знает, может мне придётся прикрутить
+нейронную сеть распознающую картинку или ещё что.</p>
+
+<p>Можно сохранять сырые данные, при синхронизации сравнивать их, а по-необходимости
+производить распознавание (<code>raw</code> -&gt; <code>fields</code>). Но тогда возникает следующая проблема:
+нам захочется посмотреть в какой расцветке (варианты окраски) продавался товар
+три месяца назад. Мы загружаем старую версию сырых данных, распознаём, и…
+получаем неправильные данные. Потому что за три месяца назад сырые данные
+выглядели не так как сейчас, и сегодняшний код не может их корректно распознать.</p>
+
+<p>Поэтому необходимо хранить и сырые данные, и уже вычисленные поля.</p>
+
+<h3 id="section-3">Распознавание</h3>
+
+<p>Вообще, распознавание напрямую не связано с загрузкой. Кроме того, оно
+может быть тяжёлой операцией, следует выделить его в отдельный воркер,
+с отдельной очередью.</p>
+
+<p>Кроме того, как я говорил выше, на каждую версию приходится одна страница,
+соответственно на один товар может приходиться несколько версий. Поэтому
+версии снабжаются идентификатором товара, к которому относятся.</p>
+
+<h3 id="section-4">Сборка из версий</h3>
+
+<p>После того как мы всё загрузили и всё распознали, мы имеем несколько распознанных
+записей для каждого товара. Одна запись – одна страница.</p>
+
+<p>Необходимо их объединить в одну запись, которую уже можно отдавать как актуальную.</p>
+
+<h2 id="section-5">Решение</h2>
+
+<p>Итак, я разбил код весь на следующие части:</p>
+
+<ul>
+  <li><code>Version</code> – модель в которой хранятся <code>raw</code> и <code>fields</code>.</li>
+  <li><code>Scraper</code> – воркер занимающийся загрузкой и выдёргиванием сырых данных с сайта</li>
+  <li><code>Scanner</code> – воркер занимающийся распознаванием версий</li>
+  <li><code>Assembler</code> – воркер группирующий версии по идентификаторам, объединяющий
+их в готовую запись о товаре, которой можно пользоваться.</li>
+</ul>
+
+<p><img class="center" src="/images/zakup-proc-diagram.png" /></p>
+
+<p>Каждый поставщик (источник) имеет свой набор scrapers и scanners, конкретно
+для его сайта. Однако код assembler для всех общий.</p>
+
+<p>Поэтому <code>fields</code> должны соответствовать определённому формату, тогда как <code>raw</code>
+у каждого поставщика может иметь свою структуру.</p>
+
+<p>Кроме того осознал ещё одну проблему: если какой-то товар неправильно распознаётся,
+и это единичный случай, то лучше дать возможность сделать менеджеру хотфикс,
+чем ждать пока программист исправить scanner и заново запустит распознавание.</p>
+
+<p>Так органичным образом добавилась ещё одна сущность:</p>
+
+<ul>
+  <li><code>Hint</code> – модель описывающая отображение (<code>raw</code> -&gt; <code>fields</code>) и имеющая
+приоритет над распознанным при сборке.</li>
+</ul>
+
+<p>Хочу отметить, что набор значений <code>raw</code> и <code>fields</code> жёстко не связан. Scanner
+может получить на вход десять различных <code>raw</code> полей, и выдать только один <code>field</code>.
+Либо наоборот, из одного <code>raw['title']</code> вычислить марку товара, материал изготовления,
+и уровень грамотности контент-менеджера, и бог знает ещё что.</p>
+
+<p>И для того чтобы понимать, какие <code>fields</code> нужно вычислить, при изменении лишь
+одного поля, нужно задать зависимости между <code>raw</code> и <code>fields</code>. Итак, в наши модели
+<code>Version</code> и <code>Hint</code> добавляется ещё один столбец <code>deps</code> от слова dependencies.</p>
+
+<h3 id="scraper">Scraper</h3>
+
+<p>Люблю декларативный стиль.</p>
+
+<p>Я искал для себя подходящий инструмент для вычленения сырых данных из DOM.
+Нашёл неплохой гем <a href="https://github.com/cheezy/page-object">PageObject</a>
+позволяющий декларативной объявить элементы на странице, и работать с ними.</p>
+
+<p>Вообще гем предназначен в первую очередь для e2e тестирования, но это ничего.
+Проблема в том, что он работает только с браузерами. Для меня, в большинстве
+случаев, браузер это overkill, можно данные получать и простым парсингом тела ответа.</p>
+
+<p>Может плохо искал, но так и не нашёл способа заставить PageObject работать без
+браузера (разумеется с отключением фич).</p>
+
+<p>Поэтому пришлось запилить небольшой DSL. Вот пример ItemScraper:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="keyword">class</span> <span class="class">FooBarVendor::ItemScraper</span> &lt; <span class="constant">Scraper</span>
+  <span class="comment"># подключаем самописный DSL для работы с HTML</span>
+  include <span class="constant">Makhno</span>
+
+  <span class="comment"># присутствие строго одного элемента</span>
+  one <span class="symbol">:title</span>,
+    <span class="key">css</span>: <span class="string"><span class="delimiter">'</span><span class="content">.product-details .product-content &gt; h1</span><span class="delimiter">'</span></span>,
+    <span class="comment"># перед manipulate, элемент будет преобразован в значение</span>
+    <span class="key">value</span>: -&gt;(e) { e.text.strip }
+
+  one <span class="symbol">:description</span>,
+    <span class="key">css</span>: <span class="string"><span class="delimiter">'</span><span class="content">.product-details .product-content .descr</span><span class="delimiter">'</span></span>,
+    <span class="key">value</span>: -&gt;(e) { e.text.strip }
+
+  one <span class="symbol">:price</span>,
+    <span class="key">css</span>: <span class="string"><span class="delimiter">'</span><span class="content">.product-details .product-content .price strong</span><span class="delimiter">'</span></span>,
+    <span class="key">value</span>: -&gt;(e) { e.text.strip }
+
+  <span class="comment"># один либо более элементов</span>
+  many <span class="symbol">:images_urls</span>,
+    <span class="key">optional</span>: <span class="predefined-constant">true</span>, <span class="comment"># послабление: ноль либо более элементов</span>
+    <span class="key">css</span>: <span class="string"><span class="delimiter">'</span><span class="content">.product-details .product-images &gt; a</span><span class="delimiter">'</span></span>,
+    <span class="key">value</span>: -&gt;(e) { normalize_url(e.attr(<span class="string"><span class="delimiter">'</span><span class="content">href</span><span class="delimiter">'</span></span>), <span class="instance-variable">@vendor</span>.domain) }
+
+  many <span class="symbol">:no_image_marker</span>,
+    <span class="key">optional</span>: <span class="predefined-constant">true</span>,
+    <span class="key">css</span>: <span class="string"><span class="delimiter">'</span><span class="content">.product-details .product-images &gt; img</span><span class="delimiter">'</span></span>,
+    <span class="key">value</span>: -&gt;(e) { <span class="predefined-constant">true</span> }
+
+  many <span class="symbol">:breadcrumbs</span>,
+    <span class="key">css</span>: <span class="string"><span class="delimiter">'</span><span class="content">.main-content .breadcrumbs li</span><span class="delimiter">'</span></span>,
+    <span class="key">value</span>: -&gt;(e) { e.text.strip }
+
+  <span class="comment"># можно добавить ещё объявлений, описывающих структуру DOM.</span>
+  <span class="comment"># просто чтобы быть уверенным что поставщик ничего не менял.</span>
+
+  <span class="comment"># Этот метод выполняется только если все элементы найдены и их value вычислен</span>
+  <span class="comment"># если каких-то элементов нет, то воркер падает с ошибкой.</span>
+  <span class="keyword">def</span> <span class="function">manipulate</span>
+    <span class="keyword">if</span> images_urls.empty?
+      raise <span class="string"><span class="delimiter">&quot;</span><span class="content">Images not found, nor placeholder either</span><span class="delimiter">&quot;</span></span> <span class="keyword">unless</span> no_image_marker
+      build_event(<span class="instance-variable">@message</span>, <span class="key">message</span>: <span class="string"><span class="delimiter">'</span><span class="content">no-images-for-item</span><span class="delimiter">'</span></span>, <span class="key">info</span>: <span class="predefined-constant">true</span>).save!
+    <span class="keyword">end</span>
+
+    <span class="instance-variable">@version</span>.raw = {
+      <span class="key">title</span>: title,
+      <span class="key">description</span>: description,
+      <span class="key">price</span>: price,
+      <span class="key">category_title</span>: breadcrumbs[<span class="integer">-2</span>],
+      <span class="key">images_urls</span>: images_urls }
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre></div>
+</div>
+</div>
+
+<p>В классе Scraper описаны методы вроде <code>normalize_url</code> и <code>build_event</code>,
+объявляются переменные-члены <code>vendor</code>, <code>message</code> и подобные.
+А вообще он наследуется от <code>Worker</code>.</p>
+
+<p>Хочу ещё добавить более умные валидации, вроде:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>require_exclusively <span class="symbol">:images_urls</span>, <span class="symbol">:no_image_marker</span>
+</pre></div>
+</div>
+</div>
+
+<p>Чтобы не делать проверки вроде <code>if images_urls.empty?</code>, что можно увидеть выше.</p>
+
+<p>А как же другие источники? Достаточно реализовать отдельный модуль, который
+будет предоставлять поля для manipulate, предоставлять какие-то инструменты
+для задания описаний и всё.</p>
+
+<h3 id="scanner">Scanner</h3>
+
+<p>Нам необходимо описать способ вычисления для каждого поля, а также задать
+зависимости. Я это сделал так:</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="keyword">class</span> <span class="class">FooBarVendor::ItemScanner</span> &lt; <span class="constant">Scanner</span>
+  field <span class="symbol">:title</span>, <span class="key">using_raw</span>: [<span class="symbol">:title</span>] <span class="keyword">do</span> |title|
+    title
+  <span class="keyword">end</span>
+
+  field <span class="symbol">:volume</span>, <span class="key">using_raw</span>: [<span class="symbol">:title</span>] <span class="keyword">do</span> |title|
+    volume_from_title(title)
+  <span class="keyword">end</span>
+
+  field <span class="symbol">:brand</span>, <span class="key">using_raw</span>: [<span class="symbol">:category_title</span>] <span class="keyword">do</span> |category_title|
+    brand_from_title(category_title)
+  <span class="keyword">end</span>
+
+  field <span class="symbol">:images</span>, <span class="key">using_raw</span>: [<span class="symbol">:images_urls</span>] <span class="keyword">do</span> |urls|
+    urls.map <span class="keyword">do</span> |url|
+      uploader = <span class="constant">ItemImageUploader</span>.new(<span class="instance-variable">@version</span>, url)
+      uploader.retrieve_from_store!(uploader.filename)
+      <span class="keyword">unless</span> uploader.file.exists?
+        uploader.store!(open(<span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">#{</span><span class="instance-variable">@vendor</span>.protocol<span class="inline-delimiter">}</span></span><span class="content">://</span><span class="inline"><span class="inline-delimiter">#{</span>url<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>))
+      <span class="keyword">end</span>
+
+      { <span class="key">original</span>: uploader.filename }
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+
+private
+
+  <span class="keyword">def</span> <span class="function">volume_from_title</span>(title)
+    <span class="keyword">if</span> fetched = title.scan(<span class="regexp"><span class="delimiter">/</span><span class="content">(</span><span class="char">\d</span><span class="content">+)</span><span class="char">\s</span><span class="content">?(мл|ml)</span><span class="delimiter">/</span><span class="modifier">i</span></span>).first
+      { <span class="key">value</span>: fetched.first.to_i, <span class="key">unit</span>: <span class="string"><span class="delimiter">'</span><span class="content">ml</span><span class="delimiter">'</span></span> }
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+
+  <span class="keyword">def</span> <span class="function">brand_from_title</span>(title)
+    <span class="comment"># skipped</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre></div>
+</div>
+</div>
+
+<p>Scanner также как и Scraper наследуется от <code>Worker</code>.</p>
+
+<p>Оба этих DSL-ля активно работают с Version, но всё это спрятано в базовых
+классах. Описывается только самый минимум, необходимый для функционирования.</p>
+
+<h3 id="dsl--">Клёвые DSL-и, делись!</h3>
+
+<p>Пока не готов. Если делиться, то это нужно оформлять как положено – в гем.
+У меня пока нет времени. Кроме того, сейчас они переплетены с моей логикой.
+Их можно будет выделить и использовать независимо, но я пока не готов этим заняться.</p>
+
+<p>Кроме того, я только начал реализовывать проект. Выпущу в продакшен, получу опыт,
+доведу их до необходимого состояния, учту пропущенные сейчас крайние случаи.</p>
+
+<h3 id="assembler">Assembler</h3>
+
+<p>Последняя часть – сборщик. Собирает конкретную запись товара, с полями которые
+можно индексировать. Но об этом – в следующем посте.</p>
+
+<p><em>To be continued.</em></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/about" title="About the author (Gordeev Vladimir)" rel="author">Gordeev Vladimir</a></span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-10-20T18:01:50+03:00" pubdate data-updated="true">Oct 20<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/design/'>design</a>, <a class='category' href='/blog/categories/dsl/'>dsl</a>, <a class='category' href='/blog/categories/rabbitmq/'>rabbitmq</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/scraping/'>scraping</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://vladimir-vg.github.io/blog/2014/10/20/how-to-organize-your-data-scraping/" data-via="" data-counturl="http://vladimir-vg.github.io/blog/2014/10/20/how-to-organize-your-data-scraping/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/10/02/angularjs-is-structurized-not-enough/" title="Previous Post: В AngularJS должно быть больше структуры">&laquo; В AngularJS должно быть больше структуры</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Gordeev Vladimir -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'vladimir-vg-blog';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://vladimir-vg.github.io/blog/2014/10/20/how-to-organize-your-data-scraping/';
+        var disqus_url = 'http://vladimir-vg.github.io/blog/2014/10/20/how-to-organize-your-data-scraping/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

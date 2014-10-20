@@ -4,7 +4,7 @@
   <title><![CDATA[Category: angularjs | Скука и рутина это зло]]></title>
   <link href="http://vladimir-vg.github.io/blog/categories/angularjs/atom.xml" rel="self"/>
   <link href="http://vladimir-vg.github.io/"/>
-  <updated>2014-10-02T14:00:54+04:00</updated>
+  <updated>2014-10-20T21:26:18+03:00</updated>
   <id>http://vladimir-vg.github.io/</id>
   <author>
     <name><![CDATA[Gordeev Vladimir]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[В AngularJS должно быть больше структуры]]></title>
     <link href="http://vladimir-vg.github.io/blog/2014/10/02/angularjs-is-structurized-not-enough/"/>
-    <updated>2014-10-02T13:33:14+04:00</updated>
+    <updated>2014-10-02T12:33:14+03:00</updated>
     <id>http://vladimir-vg.github.io/blog/2014/10/02/angularjs-is-structurized-not-enough</id>
     <content type="html"><![CDATA[<p>Angular.js – каркас для создания сложной клиентской части, как правило SPA (Single Page Application).
 В этом каркасе есть несколько сущностей, вроде controllers, directives, services, factories, provides, filters.
