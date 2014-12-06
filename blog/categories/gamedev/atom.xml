@@ -4,7 +4,7 @@
   <title><![CDATA[Category: gamedev | Скука и рутина это зло]]></title>
   <link href="http://vladimir-vg.github.io/blog/categories/gamedev/atom.xml" rel="self"/>
   <link href="http://vladimir-vg.github.io/"/>
-  <updated>2014-10-20T21:43:15+03:00</updated>
+  <updated>2014-12-07T00:42:06+02:00</updated>
   <id>http://vladimir-vg.github.io/</id>
   <author>
     <name><![CDATA[Gordeev Vladimir]]></name>
@@ -99,7 +99,7 @@
 <p>Ясно что C++ здесь не подходит.
 Очевидно что это должен быть язык, реализация которого достаточно быстро
 оперирует с числами, но при этом без багажа C++. Язык достаточно гибкий
-для создания сложной, расширяемой архитектуры. 
+для создания сложной, расширяемой архитектуры.
 В идеале это должен быть язык работающий и под iOS и под Android.
 Правда не уверен возможно ли это.</p>
 
