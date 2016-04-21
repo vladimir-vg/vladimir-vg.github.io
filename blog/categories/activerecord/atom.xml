@@ -4,7 +4,7 @@
   <title><![CDATA[Category: activerecord | Скука и рутина это зло]]></title>
   <link href="http://vladimir-vg.github.io/blog/categories/activerecord/atom.xml" rel="self"/>
   <link href="http://vladimir-vg.github.io/"/>
-  <updated>2014-12-07T00:42:06+02:00</updated>
+  <updated>2016-04-21T14:05:09+03:00</updated>
   <id>http://vladimir-vg.github.io/</id>
   <author>
     <name><![CDATA[Gordeev Vladimir]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[ActiveRecord Store в Rails 3.2]]></title>
     <link href="http://vladimir-vg.github.io/blog/2012/05/24/activerecord-3.2-store/"/>
-    <updated>2012-05-24T09:21:00+03:00</updated>
+    <updated>2012-05-24T09:21:00+04:00</updated>
     <id>http://vladimir-vg.github.io/blog/2012/05/24/activerecord-3.2-store</id>
     <content type="html"><![CDATA[<p>Недавно довелось пользоваться <code>store</code>-атрибутами которые появились в последних
 рельсах. На самом деле <code>store</code>-атрибуты довольно простая вещь: это поле в

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: dsl | Скука и рутина это зло]]></title>
   <link href="http://vladimir-vg.github.io/blog/categories/dsl/atom.xml" rel="self"/>
   <link href="http://vladimir-vg.github.io/"/>
-  <updated>2014-12-07T00:42:06+02:00</updated>
+  <updated>2016-04-21T14:05:09+03:00</updated>
   <id>http://vladimir-vg.github.io/</id>
   <author>
     <name><![CDATA[Gordeev Vladimir]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Как организовать «парсинг» внешних ресурсов при помощи DSL]]></title>
     <link href="http://vladimir-vg.github.io/blog/2014/10/20/how-to-organize-your-data-scraping/"/>
-    <updated>2014-10-20T18:01:50+03:00</updated>
+    <updated>2014-10-20T19:01:50+04:00</updated>
     <id>http://vladimir-vg.github.io/blog/2014/10/20/how-to-organize-your-data-scraping</id>
     <content type="html"><![CDATA[<p>Помимо основной работы, я занимаюсь своим небольшим побочным проектом, в основном на
 выходных. И есть особенность что отличает такие проекты – ты можешь уделять
