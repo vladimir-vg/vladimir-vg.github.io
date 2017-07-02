@@ -1,0 +1,284 @@
+html, body { margin: 0; padding: 0; }
+
+svg .unselectable {
+  cursor: default;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+svg .unselectable::selection {
+  background: none;
+}
+
+/***/
+
+.content-page {
+  margin: 0 auto;
+  width: 800px;
+}
+
+.head-block {
+  margin: 100px 0;
+}
+
+.container {
+  /*display: flex;*/
+}
+
+.container > .svg-area {
+  /*flex: 3;*/
+  width: 100%;
+}
+.container > .aside-area {
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: #fff;
+  border-left: 1px solid #d7e3f4;
+  border-bottom: 1px solid #d7e3f4;
+  min-width: 450px;
+  max-width: 690px;
+  max-height: 100%;
+  overflow-y: auto;
+
+  -webkit-box-shadow: 0px 0px 10px -2px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 10px -2px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 10px -2px rgba(0,0,0,0.75);
+}
+
+
+
+.btn {
+  border: 0;
+  padding: 10px;
+  background-color: #5599ff;
+  color: white;
+  transition: 0.3s;
+  outline: 0;
+}
+
+.btn:hover {
+  background-color: #1f78ff;
+}
+
+
+
+.cell-hover {
+  fill: transparent;
+}
+.cell-hover:hover {
+  fill: #ebf0ff;
+}
+.cell-hover.selected {
+  fill: #ebf0ff;
+  stroke: #5599ff;
+  stroke-width: 1;
+}
+
+rect.proc {
+  fill: #ccc;
+}
+line.spawn-line {
+  stroke: #666;
+  stroke-width: 1;
+}
+rect.bad-reason {
+  fill: #ff5555;
+}
+
+
+
+.message-self-send {
+  fill: none;
+  stroke: #3771c8;
+  stroke-width: 1;
+  /*marker-start: url(#markerSendStart);*/
+  marker-end: url(#markerSendEnd);
+}
+
+line.message-send {
+  stroke: #3771c8;
+  stroke-width: 1;
+  marker-start: url(#markerSendStart);
+  marker-end: url(#markerSendEnd);
+}
+
+line.message-send.muted {
+  stroke: #999;
+  marker-start: url(#muted-markerSendStart);
+  marker-end: url(#muted-markerSendEnd);
+}
+
+circle.marker-send-start {
+  stroke: none;
+  fill: #3771c8;
+}
+
+path.marker-send-end {
+  fill: #3771c8;
+}
+
+circle.marker-send-start.muted {
+  fill: #999;
+}
+
+path.marker-send-end.muted {
+  fill: #999;
+}
+
+
+
+.hovered rect.proc {
+  stroke: #99c2ff;
+  stroke-width: 2;
+}
+.hovered .spawn-line {
+  stroke: #99c2ff;
+  stroke-width: 3;
+}
+
+.selected rect.proc {
+  stroke: #5599ff;
+  stroke-width: 2;
+}
+.selected .spawn-line {
+  stroke: #5599ff;
+  stroke-width: 3;
+}
+
+
+
+rect.shell-sideline {
+  fill: #ebf0ff;
+}
+
+rect.shell-area {
+  fill: #f3f7fc;
+}
+
+line.shell-area-border {
+  stroke: #d7e3f4;
+  stroke-width: 1;
+}
+
+text.shell-text,
+text.shell-prompt-left,
+text.shell-prompt-center {
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: 16px;
+}
+
+text.shell-prompt-center.muted,
+text.shell-text.muted {
+  fill: #888;
+}
+
+
+
+text.shell-prompt-center {
+  text-anchor: middle;
+}
+
+text.shell-prompt-left {
+  text-anchor: start;
+}
+
+
+
+svg text tspan.pid {
+  fill: #5599ff;
+}
+svg text tspan.pid.hovered,
+svg text tspan.pid.selected {
+  fill: #5599ff;
+  font-weight: bold;
+}
+
+.selected-item-info .pid {
+  color: #5599ff;
+  font-family: 'Ubuntu Mono', monospace;
+}
+.selected-item-info .pid.hovered,
+.selected-item-info .pid.selected {
+  color: #5599ff;
+  font-weight: bold;
+}
+
+
+.selected-item-info {
+  /*position: fixed;*/
+  /*margin-left: 20px;
+  margin-top: 20px;*/
+  /*width: 450px; /* depends on .container > .aside-area width */*/
+  /*height: 100%;*/
+  /*overflow-y: auto;*/
+}
+.selected-item-info .attrs {
+  padding: 20px;
+  line-height: 1.3em;
+  font-family: Helvetica, sans-serif;
+}
+
+.selected-item-info > div {
+  margin-bottom: 200px;
+}
+
+.selected-item-info pre {
+  margin: 0;
+  padding: 20px;
+  background-color: #f3f7fc;
+  white-space: pre-wrap;
+  font-family: 'Ubuntu Mono', monospace;
+}
+.selected-item-info code {
+  font-family: 'Ubuntu Mono', monospace;
+}
+
+
+
+.input-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #f3f7fc;
+  border-top: 1px solid #d7e3f4;
+  display: flex;
+  min-height: 100px;
+}
+
+.input-panel .prompt {
+  background-color: #ebf0ff;
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: 16px;
+  padding-top: 5px;
+}
+
+.input-panel .input {
+  flex: 1;
+  padding: 5px;
+}
+.input-panel .info {
+  flex: 1;
+  margin: 10px;
+}
+.input-panel .notice-text {
+  color: #888;
+  font-family: sans-serif;
+  font-size: 12px;
+}
+.input-panel .input textarea {
+  width: 100%;
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+
+
+.scenarios-list-block {
+  background-color: #f6f5f3;
+  padding: 20px;
+  margin: 20px 0;
+}
