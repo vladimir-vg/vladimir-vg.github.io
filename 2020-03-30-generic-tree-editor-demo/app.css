@@ -1,0 +1,225 @@
+div { box-sizing: border-box; }
+
+body, html {
+  background-color: #EDEDED;
+  /* background-color: #eaeaea; */
+  /* background-color: rgb(238, 236, 219); */
+  color: #2a3f47;
+}
+
+button {
+  padding: 10px 20px;
+  border-radius: 20px;
+  background-color: white;
+  outline: 0;
+  border: 0;
+  color: black;
+  cursor: pointer;
+}
+button:hover {
+  background-color: rgb(254, 145, 84);
+  color: white;
+}
+
+button, .key-indicator {
+  font-family: 'Fira Sans', sans-serif;
+  font-size: 18px;
+}
+
+/**************************************/
+
+.key-indicator {
+  padding: 5px 20px;
+  border-radius: 15px;
+  border: 3px solid #C4C4C4;
+  margin: 5px 2px;
+}
+
+.key-indicator.active {
+  color: white;
+  background-color: #FE9154;
+  border-color: transparent;
+}
+
+/**************************************/
+
+
+.selectable-cell {
+  cursor: text;
+}
+.selectable-cell.selected {
+  background-color: rgb(254, 145, 84);
+  color: white;
+}
+.selectable-cell.selected .entry-value,
+.selectable-cell.selected .entry-key {
+  /* background-color: rgba(254, 145, 84, 0.3); */
+  /* background-color: rgba(255, 255, 255, 0.0); */
+  background-color: transparent;
+  color: white;
+}
+.selectable-cell.selected .entry-tree-value {
+  border-color: rgb(254, 145, 84);
+  /* background-color: rgba(255, 255, 255, 0.7); */
+  background-color: #FEDECC;;
+}
+.selectable-cell.selected .entry-tree-pair.hovered {
+  background-color: white;
+}
+.selectable-cell.selected .entry-tree-pair.hovered .entry-tree-value {
+  background-color: white;
+}
+
+
+.tree-editor {
+  margin: 30px 0 0 30px;
+  display: flex;
+}
+
+.tree-node-editor {
+  background-color: white;
+  /* padding: 30px 0; */
+  padding: 0;
+  border-radius: 30px;
+}
+
+.blob-value, .entry-value, .entry-key, .entry-tree-value, .parent-key,
+.text-decoration {
+  font-family: 'Fira Code', sans-serif;
+  font-size: 18px;
+}
+
+.entry-value.muted, .entry-key.muted, .entry-tree-value.muted {
+  color: #C4C4C4;
+}
+
+.text-decoration {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.entry-key-container .text-decoration {
+  /* draw a colon in key input */
+  position: relative;
+  left: -15px;
+}
+.entry-key-container {
+  white-space: nowrap;
+}
+
+.entry-value, .entry-key {
+  height: 30px;
+}
+
+.entry-tree-value, .parent-key {
+  padding: 3px;
+  /* border: 2px solid #dadada; */
+  border: 2px solid transparent;
+}
+.parent-key {
+  /* background-color: #f2f2f2; */
+}
+.tree-value-container > .entry-tree-value {
+  background-color: #EDEDED;
+}
+
+.entry-tree-pair.hovered {
+  /* background-color: #ddd; */
+  /* background-color: #D9EBF4; */
+  /* background-color: rgba(254, 145, 84, 0.3); */
+  background-color: #FEDECC;
+  cursor: pointer;
+}
+
+.parent-key {
+  border-radius: 10px;
+}
+.parent-key-container {
+  cursor: pointer;
+  align-self: center;
+  min-width: 150px;
+  border-bottom: 4px solid white;
+  text-align: center;
+  margin-bottom: 25px; /* to align line right on the center of the content node */
+}
+
+.entry-tree-value {
+  /* make borders overlap */
+  /* margin-top: -2px; */
+
+  border-radius: 10px;
+  border-color: white;
+  /* color: #8c8c8c; */
+}
+
+.entry-tree-value td.tree-cell .entry-tree-value {
+  border: 0;
+  padding: 0;
+  /* margin-top: 0;  do not do border overlap for nested */
+}
+.entry-tree-value td.tree-cell {
+  padding: 0;
+}
+
+.blob-value, .entry-key, .entry-value {
+  border: 2px solid transparent;
+  border-radius: 10px;
+  padding: 5px;
+
+  background-color: white;
+  color: #2a3f47;
+}
+
+.entry-value {
+  border-radius: 10px;
+}
+
+.blob-value::selection, .entry-key::selection, .entry-value::selection, .parent-key::selection, .entry-tree-value::selection {
+  /* background: #54B0E4; */
+  background: rgb(254, 145, 84);
+}
+
+/* .entry-key:focus, .entry-value:focus { */
+.entry-key.cursor, .entry-value.cursor {
+  /* border-bottom: 2px solid rgba(84, 176, 228, 1.0); */
+  border-bottom: 2px solid rgb(254, 145, 84);
+  outline: 0;
+  border-radius: 0;
+}
+
+.entry-tree-value.cursor {
+  /* border: 2px solid rgb(84, 176, 228); */
+  border: 2px solid rgb(254, 145, 84);
+}
+
+.parent-key.cursor {
+  /* border: 2px solid rgb(84, 176, 228); */
+  border: 2px solid rgb(254, 145, 84);
+  background-color: white;
+}
+
+table.entries {
+  border-collapse: collapse;
+  border: 0;
+}
+table.entries tr td {
+  vertical-align: top;
+  padding: 0;
+}
+table.entries > tbody > tr > td:first-child {
+  padding-left: 30px;
+}
+table.entries > tbody > tr > td:last-child {
+  padding-right: 30px;
+}
+table.entries > tbody > tr:first-child > td {
+  padding-top: 30px;
+}
+table.entries > tbody > tr:last-child > td {
+  padding-bottom: 30px;
+}
+.blob-value {
+  /* margin-left: 10px; */
+}
