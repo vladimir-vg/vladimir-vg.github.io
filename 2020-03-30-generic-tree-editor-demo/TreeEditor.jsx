@@ -558,7 +558,7 @@ class TreeEditor0 extends React.Component {
     if (segments.length == 1) { return; }
 
     const segments1 = segments.slice(0, segments.length-1);
-    this.props.history.push("/node/" + segments1.join("/") + "/");
+    this.props.history.push("/2020-03-30-generic-tree-editor-demo/node/" + segments1.join("/") + "/");
   }
 
   moveEntriesUp() {
@@ -731,7 +731,7 @@ class TreeEditor0 extends React.Component {
 
   navigateToChild(path) {
     const segments = this.props.path.split("/");
-    const newPath = "/node/" + segments.join("/") + "/" + path.join("/") + "/";
+    const newPath = "/2020-03-30-generic-tree-editor-demo/node/" + segments.join("/") + "/" + path.join("/") + "/";
     this.props.history.push(newPath);
   }
 
